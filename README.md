@@ -26,8 +26,8 @@ Some config files and checkpoint examples still preserve historical internal exp
 
 | Internal name in files | Public-facing meaning |
 |---|---|
-| `convnext_v2_5slice_1mm` | 5-slice model |
-| `convnext_v3_7slice_dilated_1mm` | 7-slice dilated model |
+| `convnext_v2_5slice_1mm` | 5-slice ConvNeXt model |
+| `convnext_v3_7slice_dilated_1mm` | 7-slice dilated ConvNeXt model |
 
 ## Who this is for
 
@@ -48,7 +48,7 @@ Some config files and checkpoint examples still preserve historical internal exp
 | Metric | Value | Why it matters |
 |---|---:|---|
 | Local test mean Dice | 0.631 | Practical performance snapshot for the bundled 2.5D ensemble recipe |
-| Validation mean Dice | 0.722 | Demonstrates stronger in-distribution validation behavior for the ensemble |
+| Validation mean Dice | 0.722 | Demonstrates stronger in-distribution validation behavior for the two-ConvNeXt ensemble |
 | 3D U-Net baseline test Dice | 0.514 | Provides a local comparison anchor |
 | Relative gain vs 3D baseline | +22.8% | Shows the benefit of the 2.5D ensemble in the local test setting |
 

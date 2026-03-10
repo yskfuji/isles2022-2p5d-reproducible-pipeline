@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="360" viewBox="0 0 1200 360" role="img" aria-labelledby="title desc">
   <title id="title">ISLES 2.5D results snapshot</title>
-  <desc id="desc">Benchmark table and bar chart comparing the 3D UNet baseline with a 5-slice model, a 7-slice dilated model, and their ensemble.</desc>
+  <desc id="desc">Benchmark table and bar chart comparing the 3D UNet baseline with a 5-slice ConvNeXt model, a 7-slice dilated ConvNeXt model, and their ensemble.</desc>
   <rect width="1200" height="360" fill="#0f172a"/>
   <text x="60" y="48" fill="#f8fafc" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700">ISLES 2022 — Results Snapshot</text>
 
@@ -30,7 +30,7 @@
 
   <!-- Row 4 (best) -->
   <rect x="60" y="208" width="600" height="36" rx="0" fill="#1e3a1e" stroke="#10b981" stroke-width="1.5"/>
-  <text x="80"  y="231" fill="#6ee7b7" font-family="Arial" font-size="11" font-weight="700">Ensemble (5-slice + 7-slice)</text>
+  <text x="80"  y="231" fill="#6ee7b7" font-family="Arial" font-size="11" font-weight="700">ConvNeXt ensemble</text>
   <text x="380" y="231" fill="#6ee7b7" font-family="Arial" font-size="13" font-weight="700" text-anchor="middle">0.722</text>
   <text x="570" y="231" fill="#6ee7b7" font-family="Arial" font-size="13" font-weight="700" text-anchor="middle">0.631</text>
   <text x="690" y="231" fill="#6ee7b7" font-family="Arial" font-size="10">← best</text>

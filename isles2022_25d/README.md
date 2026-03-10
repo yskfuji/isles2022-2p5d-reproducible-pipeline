@@ -27,8 +27,8 @@
 
 | ファイル中の内部名 | 公開文書での意味 |
 |---|---|
-| `convnext_v2_5slice_1mm` | 5 スライス構成 |
-| `convnext_v3_7slice_dilated_1mm` | 7 スライス dilated 構成 |
+| `convnext_v2_5slice_1mm` | 5 スライス ConvNeXt 構成 |
+| `convnext_v3_7slice_dilated_1mm` | 7 スライス dilated ConvNeXt 構成 |
 
 ## 固定スナップショット（ポートフォリオ用）
 
@@ -73,7 +73,7 @@
 
 以下は `github_public_isles_25d/core/pipeline/` をカレントとして実行します。
 
-> 注: 設定ファイル名や学習済み重みのパスには、内部実験名として旧来の `convnext_v2` / `convnext_v3` が残っています。公開文書上では、それぞれ **5 スライス構成**、**7 スライス dilated 構成** として扱います。
+> 注: 設定ファイル名や学習済み重みのパスには、内部実験名として旧来の `convnext_v2` / `convnext_v3` が残っています。公開文書上では、それぞれ **5 スライス ConvNeXt 構成**、**7 スライス dilated ConvNeXt 構成** として扱います。
 
 ### 2.1 5 スライス構成の学習
 
@@ -117,7 +117,7 @@ python -m src.evaluation.evaluate_isles_25d_ensemble \
 
 ## 3. 現時点の要点（ポートフォリオ向け）
 
-- 2.5D ConvNeXt を主軸に、5 スライス構成と 7 スライス dilated 構成の設計差分、およびそのアンサンブル効果を検証しています。
+- 2.5D ConvNeXt を主軸に、5 スライス ConvNeXt 構成と 7 スライス dilated ConvNeXt 構成の設計差分、およびそのアンサンブル効果を検証しています。
 - 小病変への対応として、Tversky loss、OHEM、EMA を組み合わせた設定を使っています。
 - 既存レポートでは、test で mean Dice 0.631 のアンサンブル結果を確認しています（設定依存）。
 
