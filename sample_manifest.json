@@ -1,0 +1,23 @@
+{
+  "repo": "isles2022-25d-pipeline",
+  "task": "ischemic stroke lesion segmentation (2.5D)",
+  "dataset_mode": "dummy",
+  "sample_cases": [
+    {
+      "case_id": "demo_isles_0001",
+      "modalities": ["DWI", "ADC", "FLAIR"],
+      "split": "train",
+      "spacing_mm": [1.0, 1.0, 1.0],
+      "notes": "Illustrative sample only. No patient data is bundled."
+    }
+  ],
+  "expected_outputs": [
+    "artifacts/smoke_dummy/summary.json",
+    "artifacts/smoke_dummy/MANIFEST.sha256.txt"
+  ],
+  "entrypoints": [
+    "core/pipeline/src/training/train_isles_25d_convnext_fpn.py",
+    "core/pipeline/src/evaluation/evaluate_isles_25d.py",
+    "core/pipeline/src/evaluation/evaluate_isles_25d_ensemble.py"
+  ]
+}
