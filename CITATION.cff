@@ -12,7 +12,7 @@ url: "https://github.com/yskfuji/isles2022-2p5d-reproducible-pipeline"
 abstract: >-
   2.5D ConvNeXt ensemble pipeline for ISLES 2022 ischemic stroke lesion segmentation.
   Achieves test mean Dice 0.631 (+22.8% relative vs 3D U-Net baseline) using a
-  v2 (5-slice) and v3 (7-slice dilated) ensemble with Tversky loss and EMA.
+  5-slice model and 7-slice dilated model ensemble with Tversky loss and EMA.
 keywords:
   - medical-imaging
   - segmentation

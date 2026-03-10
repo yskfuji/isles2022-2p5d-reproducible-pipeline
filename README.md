@@ -15,7 +15,7 @@ Reproducible 2.5D ischemic stroke lesion segmentation pipeline for ISLES 2022, w
 ## What this repository provides
 
 - A reproducible train-evaluate-ensemble workflow for ISLES 2022 lesion segmentation
-- 2.5D ConvNeXt baselines with explicit slice-stack design differences between v2 and v3
+- 2.5D ConvNeXt baselines with explicit differences between the 5-slice model and the 7-slice dilated model
 - Ensemble evaluation for a lightweight alternative to full 3D segmentation
 - Portfolio-ready documentation for external review
 - A no-data smoke test that checks the public bundle in under a minute
@@ -96,4 +96,4 @@ To keep ongoing changes reviewable, future commits follow Conventional Commits (
 - `fix: threshold default in eval script`
 - `feat: add ensemble calibration notes`
 - `refactor: slice sampler validation`
-- `docs: clarify v2 vs v3 evaluation protocol`
+- `docs: clarify 5-slice vs 7-slice evaluation protocol`

@@ -64,14 +64,16 @@ organized so a third party can understand and rerun the pipeline with their own 
 
 Run the commands below from `github_public_isles_25d/core/pipeline/`.
 
-### 2.1 Train v2
+> Note: some config filenames and checkpoint paths still use the historical internal labels `convnext_v2` and `convnext_v3`. In public-facing documentation, these are described as the **5-slice model** and the **7-slice dilated model**.
+
+### 2.1 Train the 5-slice model
 
 ```bash
 python -m src.training.train_isles_25d_convnext_fpn \
   --config configs/train_convnext_v2_5slice_1mm.yaml
 ```
 
-### 2.2 Train v3
+### 2.2 Train the 7-slice dilated model
 
 ```bash
 python -m src.training.train_isles_25d_convnext_fpn \
@@ -86,7 +88,7 @@ python -m src.evaluation.evaluate_isles_25d \
   --csv-path data/splits/isles2022_train_val_test.csv \
   --root data/processed/isles2022_dwi_adc_flair_1mm \
   --split test \
-  --out-dir results/eval_v3_test \
+  --out-dir results/eval_7slice_test \
   --thr 0.85 --min-size 32 --prob-filter 0.0
 ```
 
@@ -98,7 +100,7 @@ python -m src.evaluation.evaluate_isles_25d_ensemble \
   --csv-path data/splits/isles2022_train_val_test.csv \
   --root data/processed/isles2022_dwi_adc_flair_1mm \
   --split test \
-  --out-dir results/eval_ens_v2_v3_test \
+  --out-dir results/eval_ensemble_5slice_7slice_test \
   --thr 0.85 --min-size 32 --prob-filter 0.0
 ```
 
@@ -106,7 +108,7 @@ python -m src.evaluation.evaluate_isles_25d_ensemble \
 
 ## 3. Current highlights (portfolio notes)
 
-- The pipeline centers on 2.5D ConvNeXt variants, comparing v2 / v3 slice-context designs and their ensemble effect.
+- The pipeline centers on two 2.5D ConvNeXt variants, comparing a 5-slice design with a 7-slice dilated design and their ensemble effect.
 - Small-lesion handling is supported through settings such as Tversky loss, OHEM, and EMA.
 - Existing reports include ensemble runs with mean Dice around 0.631 on the local test setting, depending on configuration.
 

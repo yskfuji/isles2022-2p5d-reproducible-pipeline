@@ -66,14 +66,16 @@
 
 以下は `github_public_isles_25d/core/pipeline/` をカレントとして実行します。
 
-### 2.1 v2 学習
+> 注: 設定ファイル名や学習済み重みのパスには、内部実験名として旧来の `convnext_v2` / `convnext_v3` が残っています。公開文書上では、それぞれ **5 スライス構成**、**7 スライス dilated 構成** として扱います。
+
+### 2.1 5 スライス構成の学習
 
 ```bash
 python -m src.training.train_isles_25d_convnext_fpn \
   --config configs/train_convnext_v2_5slice_1mm.yaml
 ```
 
-### 2.2 v3 学習
+### 2.2 7 スライス dilated 構成の学習
 
 ```bash
 python -m src.training.train_isles_25d_convnext_fpn \
@@ -88,7 +90,7 @@ python -m src.evaluation.evaluate_isles_25d \
   --csv-path data/splits/isles2022_train_val_test.csv \
   --root data/processed/isles2022_dwi_adc_flair_1mm \
   --split test \
-  --out-dir results/eval_v3_test \
+  --out-dir results/eval_7slice_test \
   --thr 0.85 --min-size 32 --prob-filter 0.0
 ```
 
@@ -100,7 +102,7 @@ python -m src.evaluation.evaluate_isles_25d_ensemble \
   --csv-path data/splits/isles2022_train_val_test.csv \
   --root data/processed/isles2022_dwi_adc_flair_1mm \
   --split test \
-  --out-dir results/eval_ens_v2_v3_test \
+  --out-dir results/eval_ensemble_5slice_7slice_test \
   --thr 0.85 --min-size 32 --prob-filter 0.0
 ```
 
@@ -108,7 +110,7 @@ python -m src.evaluation.evaluate_isles_25d_ensemble \
 
 ## 3. 現時点の要点（ポートフォリオ向け）
 
-- 2.5D ConvNeXt を主軸に、v2 / v3 のスライス設計差分とアンサンブル効果を検証しています。
+- 2.5D ConvNeXt を主軸に、5 スライス構成と 7 スライス dilated 構成の設計差分、およびそのアンサンブル効果を検証しています。
 - 小病変への対応として、Tversky loss、OHEM、EMA を組み合わせた設定を使っています。
 - 既存レポートでは、test で mean Dice 0.631 のアンサンブル結果を確認しています（設定依存）。
 
