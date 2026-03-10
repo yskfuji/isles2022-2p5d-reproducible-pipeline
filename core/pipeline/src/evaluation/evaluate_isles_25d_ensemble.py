@@ -1,240 +1,279 @@
-"""Ensemble evaluation: average probability maps from multiple 2.5D models.
+"""Ensemble evaluation for 2.5D ISLES models.
 
-Usage:
-  cd ToReBrain-pipeline
-  PYTHONPATH=$PWD python -m src.evaluation.evaluate_isles_25d_ensemble \\
-    --model-paths results/.../v2_1mm/best.pt results/.../v3_dilated_1mm/best.pt \\
-    --csv-path data/splits/my_dataset_dwi_adc_flair_train_val_test.csv \\
-    --root data/processed/my_dataset_dwi_adc_flair_1mm \\
-    --split val \\
-    --out-dir results/eval_ensemble_v2_v3_val
+Supports either:
+- direct checkpoint ensembling (`--model-paths`), or
+- saved probability-map ensembling (`--probs-dirs`).
 """
+
 from __future__ import annotations
 
 import argparse
 import json
 from pathlib import Path
+from typing import Any, Optional
 
 import numpy as np
-import torch
-import yaml
-from numpy.typing import NDArray
-from scipy.ndimage import label as cc_label
 
 from ..datasets.isles_dataset import IslesVolumeDataset
-from ..models.convnext_nnunet_seg import ConvNeXtNnUNetSeg
 from ..training.utils_train import prepare_device
-from .evaluate_isles_25d import (
-    _center_pad_crop_np,
-    _restore_pad_crop_np,
-    postprocess,
-    _dice,
-    _lesionwise_f1,
+from .common_25d import (
+    dice_score,
+    fp_component_stats,
+    gt_size_bucket,
     infer_volume,
+    infer_volume_logits,
+    lesionwise_f1,
+    load_25d_model,
+    parse_float_bins,
+    parse_int_bins,
+    parse_thresholds,
+    postprocess,
+    prob_to_logit,
+    slice_spacing_bucket,
 )
-
-
-def _load_model(model_path: Path, device: torch.device) -> tuple[torch.nn.Module, list[int], tuple[int, int], bool]:
-    """Load a ConvNeXtNnUNetSeg model from a checkpoint, auto-detecting config.
-
-    Returns (model, offsets, img_size, hint_attn).
-    """
-    config_path = model_path.parent / "config.yaml"
-    cfg_data: dict = {}
-    cfg_train: dict = {}
-    if config_path.exists():
-        cfg = yaml.safe_load(config_path.read_text())
-        cfg_data  = cfg.get("data",  {})
-        cfg_train = cfg.get("train", {})
-
-    k = int(cfg_data.get("k_slices", 2))
-    _sof = cfg_data.get("slice_offsets")
-    offsets: list[int] = [int(x) for x in _sof] if _sof is not None else list(range(-k, k + 1))
-
-    _isz = cfg_data.get("img_size")
-    img_size: tuple[int, int] = tuple(int(x) for x in _isz) if _isz else (256, 256)  # type: ignore[assignment]
-
-    n_modalities = 3
-    hint_attn    = bool(cfg_train.get("hint_attn", False))
-    in_channels  = n_modalities * len(offsets) + (1 if hint_attn else 0)
-    backbone     = str(cfg_train.get("backbone", "convnext_tiny"))
-    dec_ch       = int(cfg_train.get("dec_ch", 256))
-    deep_sup     = bool(cfg_train.get("deep_sup", False))
-
-    model = ConvNeXtNnUNetSeg(
-        in_channels=in_channels,
-        backbone=backbone,
-        pretrained=False,
-        first_conv_init=str(cfg_train.get("first_conv_init", "repeat")),
-        dec_ch=dec_ch,
-        out_channels=1,
-        deep_sup=deep_sup,
-        hint_attn=hint_attn,
-    )
-    state = torch.load(str(model_path), map_location="cpu")
-    if isinstance(state, dict) and "model" in state and not any(
-        k.startswith("encoder.") for k in state
-    ):
-        state = state["model"]
-    model.load_state_dict(state)
-    model.to(device).eval()
-    print(f"  Loaded: {model_path.name}  offsets={offsets}  in_ch={in_channels}  hint_attn={hint_attn}")
-    return model, offsets, img_size, hint_attn
+from .evaluate_isles_25d import _load_probs_npz, _stats_for_subset
 
 
 def main() -> None:
     p = argparse.ArgumentParser(description="Ensemble 2.5D ConvNeXt models on ISLES.")
-    p.add_argument("--model-paths", nargs="+", required=True, help="Paths to best.pt checkpoints.")
-    p.add_argument("--csv-path",    required=True)
-    p.add_argument("--root",        required=True)
-    p.add_argument("--split",       default="val")
-    p.add_argument("--out-dir",     required=True)
-    p.add_argument("--normalize",   default="fixed_nonzero_zscore")
-    p.add_argument("--thr",         type=float, default=0.85)
-    p.add_argument("--min-size",    type=int,   default=64)
+    p.add_argument("--model-paths", nargs="*", default=None, help="Paths to best.pt checkpoints.")
+    p.add_argument("--probs-dirs", nargs="*", default=None, help="Directories containing <case_id>.npz probability maps.")
+    p.add_argument("--csv-path", required=True)
+    p.add_argument("--root", required=True)
+    p.add_argument("--split", default="val")
+    p.add_argument("--out-dir", required=True)
+    p.add_argument("--normalize", default="fixed_nonzero_zscore")
+    p.add_argument("--thresholds", default="0.85")
+    p.add_argument("--temperature", default="1.0")
+    p.add_argument("--min-size", type=int, default=64)
     p.add_argument("--prob-filter", type=float, default=0.96)
-    p.add_argument("--closing-mm",  type=int,   default=0, help="Morphological closing radius in mm (0=off).")
-    p.add_argument("--tta", action="store_true", default=False,
-                   help="Test-Time Augmentation: average over original + LR/UD/LR+UD flips.")
+    p.add_argument("--cc-score", default="none")
+    p.add_argument("--cc-score-thr", type=float, default=0.5)
+    p.add_argument("--top-k", type=int, default=0)
+    p.add_argument("--closing-mm", type=int, default=0)
+    p.add_argument("--tta", action="store_true", default=False)
     p.add_argument("--stage1-probs-dirs", nargs="*", default=None,
-                   help="Per-model Stage1 prob dirs (one per --model-paths). Use 'none' for models without hint.")
+                   help="Per-model Stage1 prob dirs. Use 'none' for models without hints.")
+    p.add_argument("--save-probs-dir", default=None)
+    p.add_argument("--save-probs-dtype", default="float16", choices=["float16", "float32"])
+    p.add_argument("--gt-size-bins", default="250,1000")
+    p.add_argument("--slice-spacing-bins-mm", default="3.0")
     args = p.parse_args()
 
-    out_dir = Path(args.out_dir)
-    out_dir.mkdir(parents=True, exist_ok=True)
-    device = prepare_device()
+    model_paths = [Path(x).expanduser().resolve() for x in (args.model_paths or []) if str(x).strip()]
+    probs_dirs = [Path(x).expanduser().resolve() for x in (args.probs_dirs or []) if str(x).strip()]
+    if not model_paths and not probs_dirs:
+        raise ValueError("Provide --model-paths or --probs-dirs")
+    if model_paths and probs_dirs:
+        raise ValueError("Use either --model-paths or --probs-dirs, not both")
 
-    # Resolve per-model stage1 probs dirs
-    s1_dirs: list[Path | None] = []
-    if args.stage1_probs_dirs is not None:
-        for d in args.stage1_probs_dirs:
+    out_dir = Path(args.out_dir).expanduser().resolve()
+    out_dir.mkdir(parents=True, exist_ok=True)
+    save_probs_dir: Optional[Path] = Path(args.save_probs_dir).expanduser().resolve() if args.save_probs_dir else None
+    if save_probs_dir is not None:
+        save_probs_dir.mkdir(parents=True, exist_ok=True)
+    out_dtype = np.float16 if str(args.save_probs_dtype).lower() == "float16" else np.float32
+
+    thresholds = parse_thresholds(model_paths[0] if model_paths else None, str(args.thresholds))
+    temperature = float(args.temperature)
+    gt_bins = parse_int_bins(args.gt_size_bins)
+    spacing_bins = parse_float_bins(args.slice_spacing_bins_mm)
+
+    ds = IslesVolumeDataset(csv_path=args.csv_path, split=args.split, root=args.root, normalize=args.normalize)
+    print(f"Split='{args.split}': {len(ds)} cases")
+
+    device = prepare_device() if model_paths else None
+    models_info: list[dict[str, Any]] = []
+    s1_dirs: list[Optional[Path]] = []
+    if model_paths:
+        raw_s1 = list(args.stage1_probs_dirs or [])
+        while len(raw_s1) < len(model_paths):
+            raw_s1.append(None)
+        for d in raw_s1[: len(model_paths)]:
             if d is None or str(d).strip().lower() == "none":
                 s1_dirs.append(None)
             else:
-                p_ = Path(str(d).strip())
-                s1_dirs.append(p_ if p_.exists() else None)
+                s1_dirs.append(Path(str(d)).expanduser().resolve())
+        for mp, s1 in zip(model_paths, s1_dirs):
+            info = load_25d_model(mp, device, stage1_probs_dir=str(s1) if s1 is not None else None)
+            models_info.append(info)
+            print(f"Loaded: {mp.name} offsets={info['offsets']} img_size={info['img_size']}")
     else:
-        s1_dirs = [None] * len(args.model_paths)
-    # Pad to match number of models
-    while len(s1_dirs) < len(args.model_paths):
-        s1_dirs.append(None)
+        print(f"Using saved probabilities from {len(probs_dirs)} directories")
 
-    # Load all models
-    print(f"Loading {len(args.model_paths)} models:")
-    models_info: list[tuple[torch.nn.Module, list[int], tuple[int, int], bool]] = []
-    for mp in args.model_paths:
-        model, offsets, img_size, hint_attn = _load_model(Path(mp), device)
-        models_info.append((model, offsets, img_size, hint_attn))
-
-    # Dataset
-    ds = IslesVolumeDataset(
-        csv_path=args.csv_path,
-        split=args.split,
-        root=args.root,
-        normalize=args.normalize,
-    )
-    print(f"Split='{args.split}': {len(ds)} cases")
-    print(f"Post-proc: thr={args.thr}, min_size={args.min_size}, prob_filter={args.prob_filter}\n")
-
-    records: list[dict] = []
+    records: list[dict[str, Any]] = []
 
     for idx in range(len(ds)):
-        sample  = ds[idx]
-        vol     = sample["image"].astype(np.float32)   # (C, Z, H, W)
-        mask_gt = (sample["mask"] > 0.5).astype(np.uint8)
+        sample = ds[idx]
         case_id = str(sample["case_id"])
+        vol = sample["image"].astype(np.float32)
+        gt = (sample["mask"] > 0.5).astype(np.uint8)
+        meta = sample.get("meta") or {}
+        slice_spacing_mm = meta.get("slice_spacing_mm") if isinstance(meta, dict) else None
+        size_bucket = gt_size_bucket(int(gt.sum()), gt_bins)
+        spacing_bucket = slice_spacing_bucket(float(slice_spacing_mm) if slice_spacing_mm is not None else None, spacing_bins)
 
-        # Average probability maps from all models
-        probs = []
-        for (model, offsets, img_size, hint_attn), s1_dir in zip(models_info, s1_dirs):
-            extra_vol = None
-            if hint_attn and s1_dir is not None:
-                npz_path = s1_dir / f"{case_id}.npz"
-                if npz_path.exists():
-                    s1 = np.load(str(npz_path))["probs"].astype(np.float32)
+        probs_list: list[np.ndarray] = []
+        if models_info:
+            assert device is not None
+            for info in models_info:
+                extra_vol = None
+                s1_dir = info.get("stage1_probs_dir")
+                if s1_dir:
+                    npz_path = Path(str(s1_dir)) / f"{case_id}.npz"
+                    if npz_path.exists():
+                        extra_vol = _load_probs_npz(npz_path)
+                    else:
+                        extra_vol = np.zeros((vol.shape[1], vol.shape[2], vol.shape[3]), dtype=np.float32)
+                if float(temperature) == 1.0:
+                    prob = infer_volume(
+                        vol,
+                        info["model"],
+                        offsets=info["offsets"],
+                        img_size=info["img_size"],
+                        device=device,
+                        extra_vol=extra_vol,
+                        tta=bool(args.tta),
+                        temperature=1.0,
+                    )
                 else:
-                    s1 = np.zeros((vol.shape[1], vol.shape[2], vol.shape[3]), dtype=np.float32)
-                extra_vol = s1  # (Z, H, W)
-            elif hint_attn:
-                extra_vol = np.zeros((vol.shape[1], vol.shape[2], vol.shape[3]), dtype=np.float32)  # (Z, H, W)
-            probs.append(infer_volume(vol, model, offsets=offsets, img_size=img_size, device=device,
-                                      extra_vol=extra_vol, tta=args.tta))
-        prob = np.mean(probs, axis=0)
+                    logits = infer_volume_logits(
+                        vol,
+                        info["model"],
+                        offsets=info["offsets"],
+                        img_size=info["img_size"],
+                        device=device,
+                        extra_vol=extra_vol,
+                        tta=bool(args.tta),
+                    )
+                    prob = (1.0 / (1.0 + np.exp(-(logits / float(temperature))))).astype(np.float32, copy=False)
+                probs_list.append(prob)
+        else:
+            for d in probs_dirs:
+                probs_list.append(_load_probs_npz(d / f"{case_id}.npz"))
+            if float(temperature) != 1.0:
+                probs_list = [
+                    (1.0 / (1.0 + np.exp(-(prob_to_logit(p) / float(temperature))))).astype(np.float32, copy=False)
+                    for p in probs_list
+                ]
 
-        pred = postprocess(prob, thr=args.thr, min_size=args.min_size, prob_filter=args.prob_filter, closing_mm=args.closing_mm)
+        prob_ens = np.mean(np.stack(probs_list, axis=0), axis=0).astype(np.float32, copy=False)
+        if save_probs_dir is not None:
+            np.savez_compressed(str(save_probs_dir / f"{case_id}.npz"), probs=prob_ens.astype(out_dtype, copy=False))
 
-        gt_vox   = int(mask_gt.sum())
-        pred_vox = int(pred.sum())
-        tp_vox   = int((pred * mask_gt).sum())
-        fp_vox   = pred_vox - tp_vox
-        fn_vox   = gt_vox  - tp_vox
-        dice     = _dice(pred, mask_gt)
-        lw       = _lesionwise_f1(pred, mask_gt)
-
-        rec = {
-            "case_id":   case_id,
-            "dice":      float(dice),
-            "gt_vox":    gt_vox,
-            "pred_vox":  pred_vox,
-            "tp_vox":    tp_vox,
-            "fp_vox":    fp_vox,
-            "fn_vox":    fn_vox,
-            "gt_pos":    bool(gt_vox > 0),
-            **lw,
+        rec: dict[str, Any] = {
+            "case_id": case_id,
+            "gt_vox": int(gt.sum()),
+            "gt_pos": bool(int(gt.sum()) > 0),
+            "gt_size_bucket": size_bucket,
+            "slice_spacing_bucket": spacing_bucket,
+            "slice_spacing_mm": None if slice_spacing_mm is None else float(slice_spacing_mm),
         }
+        for thr in thresholds:
+            pred = postprocess(
+                prob_ens,
+                thr=float(thr),
+                min_size=int(args.min_size),
+                prob_filter=float(args.prob_filter),
+                cc_score=str(args.cc_score),
+                cc_score_thr=float(args.cc_score_thr),
+                top_k=int(args.top_k),
+                closing_mm=int(args.closing_mm),
+            )
+            pred_vox = int(pred.sum())
+            tp_vox = int((pred * gt).sum())
+            fp_vox = pred_vox - tp_vox
+            fn_vox = int(gt.sum()) - tp_vox
+            fp_cc, fp_cc_vox, fp_cc_size_p90 = fp_component_stats(pred, gt)
+            rec[f"dice@{thr:g}"] = float(dice_score(pred, gt))
+            rec[f"pred_vox@{thr:g}"] = int(pred_vox)
+            rec[f"tp_vox@{thr:g}"] = int(tp_vox)
+            rec[f"fp_vox@{thr:g}"] = int(fp_vox)
+            rec[f"fn_vox@{thr:g}"] = int(fn_vox)
+            rec[f"detected@{thr:g}"] = bool(tp_vox > 0)
+            rec[f"fp_cc@{thr:g}"] = int(fp_cc)
+            rec[f"fp_cc_vox@{thr:g}"] = int(fp_cc_vox)
+            rec[f"fp_cc_size_p90@{thr:g}"] = fp_cc_size_p90
+
+        best_case_thr = max(thresholds, key=lambda t: float(rec[f"dice@{t:g}"]))
+        print(
+            f"[{idx+1:2d}/{len(ds)}] {case_id}: gt={int(gt.sum()):7d} best_case_thr={best_case_thr:g} "
+            f"dice={float(rec[f'dice@{best_case_thr:g}']):.4f}",
+            flush=True,
+        )
         records.append(rec)
-        print(f"[{idx+1:2d}/{len(ds)}] {case_id}: gt={gt_vox:7d}  pred={pred_vox:7d}  "
-              f"dice={dice:.4f}  lesion_f1={lw['lesion_f1']:.3f}", flush=True)
 
-    # Aggregate
-    dices       = [r["dice"] for r in records]
-    gt_pos_recs = [r for r in records if r["gt_pos"]]
-    gt_neg_recs = [r for r in records if not r["gt_pos"]]
+    per_threshold: list[dict[str, Any]] = []
+    for thr in thresholds:
+        row = _stats_for_subset(records, float(thr))
+        row["threshold"] = float(thr)
+        row["by_gt_size_bucket"] = {
+            bucket: _stats_for_subset([r for r in records if str(r.get("gt_size_bucket")) == bucket], float(thr))
+            for bucket in sorted(set(str(r.get("gt_size_bucket", "all")) for r in records))
+        }
+        row["by_slice_spacing"] = {
+            bucket: _stats_for_subset([r for r in records if str(r.get("slice_spacing_bucket")) == bucket], float(thr))
+            for bucket in sorted(set(str(r.get("slice_spacing_bucket", "all")) for r in records))
+        }
+        per_threshold.append(row)
 
-    det_rate = float(np.mean([r["tp_vox"] > 0 for r in gt_pos_recs])) if gt_pos_recs else None
-    fp_rate  = float(np.mean([r["pred_vox"] > 0 for r in gt_neg_recs])) if gt_neg_recs else None
-
-    total_tp = sum(r["tp_vox"] for r in records)
-    total_fp = sum(r["fp_vox"] for r in records)
-    total_fn = sum(r["fn_vox"] for r in records)
-    prec_g = total_tp / (total_tp + total_fp + 1e-6)
-    rec_g  = total_tp / (total_tp + total_fn + 1e-6)
+    primary = max(per_threshold, key=lambda r: float(r.get("mean_dice") or -1.0))
+    best_thr = float(primary["threshold"])
+    for rec in records:
+        rec.update(
+            {
+                "dice": rec[f"dice@{best_thr:g}"],
+                "pred_vox": rec[f"pred_vox@{best_thr:g}"],
+                "tp_vox": rec[f"tp_vox@{best_thr:g}"],
+                "fp_vox": rec[f"fp_vox@{best_thr:g}"],
+                "fn_vox": rec[f"fn_vox@{best_thr:g}"],
+                "detected": rec[f"detected@{best_thr:g}"],
+                "fp_cc": rec[f"fp_cc@{best_thr:g}"],
+                "fp_cc_vox": rec[f"fp_cc_vox@{best_thr:g}"],
+                "fp_cc_size_p90": rec[f"fp_cc_size_p90@{best_thr:g}"],
+            }
+        )
 
     summary = {
-        "model_paths":     args.model_paths,
-        "n_models":        len(args.model_paths),
-        "split":           args.split,
-        "thr":             args.thr,
-        "min_size":        args.min_size,
-        "prob_filter":     args.prob_filter,
-        "closing_mm":      args.closing_mm,
-        "n":               len(records),
-        "mean_dice":       float(np.mean(dices)),
-        "median_dice":     float(np.median(dices)),
-        "std_dice":        float(np.std(dices)),
-        "mean_dice_pos":   float(np.mean([r["dice"] for r in gt_pos_recs])) if gt_pos_recs else None,
-        "detection_rate":  det_rate,
-        "fp_rate_neg":     fp_rate,
-        "precision_global": float(prec_g),
-        "recall_global":   float(rec_g),
-        "mean_lesion_f1":  float(np.mean([r["lesion_f1"] for r in records])),
+        "model_paths": [str(x) for x in model_paths] if model_paths else None,
+        "probs_dirs": [str(x) for x in probs_dirs] if probs_dirs else None,
+        "n_models": int(len(model_paths) or len(probs_dirs)),
+        "split": args.split,
+        "csv_path": args.csv_path,
+        "root": args.root,
+        "normalize": args.normalize,
+        "temperature": float(temperature),
+        "thresholds": [float(t) for t in thresholds],
+        "best_threshold": float(best_thr),
+        "min_size": int(args.min_size),
+        "prob_filter": float(args.prob_filter),
+        "cc_score": str(args.cc_score),
+        "cc_score_thr": float(args.cc_score_thr),
+        "top_k": int(args.top_k),
+        "closing_mm": int(args.closing_mm),
+        "gt_size_bins": [int(x) for x in gt_bins],
+        "slice_spacing_bins_mm": [float(x) for x in spacing_bins],
+        "n": int(len(records)),
+        "mean_dice": primary.get("mean_dice"),
+        "median_dice": primary.get("median_dice"),
+        "mean_dice_pos": primary.get("mean_dice_pos"),
+        "detection_rate_case": primary.get("detection_rate_case"),
+        "false_alarm_rate_case": primary.get("false_alarm_rate_case"),
+        "voxel_precision": primary.get("voxel_precision"),
+        "voxel_recall": primary.get("voxel_recall"),
+        "mean_fp_vox": primary.get("mean_fp_vox"),
+        "mean_fp_cc": primary.get("mean_fp_cc"),
+        "mean_pred_vox": primary.get("mean_pred_vox"),
+        "per_threshold": per_threshold,
     }
 
     (out_dir / "metrics.json").write_text(json.dumps(records, indent=2))
     (out_dir / "summary.json").write_text(json.dumps(summary, indent=2))
 
     print("\n=== Summary ===")
-    print(f"  mean_dice       : {summary['mean_dice']:.4f}")
-    print(f"  median_dice     : {summary['median_dice']:.4f}")
-    if summary["mean_dice_pos"]:
-        print(f"  mean_dice (pos) : {summary['mean_dice_pos']:.4f}")
-    if summary["detection_rate"] is not None:
-        print(f"  detection_rate  : {summary['detection_rate']:.3f}")
-    if summary["fp_rate_neg"] is not None:
-        print(f"  fp_rate (neg)   : {summary['fp_rate_neg']:.3f}")
-    print(f"  precision       : {summary['precision_global']:.4f}")
-    print(f"  recall          : {summary['recall_global']:.4f}")
-    print(f"  mean_lesion_f1  : {summary['mean_lesion_f1']:.4f}")
+    print(f"  best_threshold   : {best_thr:g}")
+    print(f"  mean_dice       : {summary['mean_dice']:.4f}" if summary["mean_dice"] is not None else "")
+    print(f"  median_dice     : {summary['median_dice']:.4f}" if summary["median_dice"] is not None else "")
     print(f"\n  Results saved → {out_dir}/")
 
 

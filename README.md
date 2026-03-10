@@ -17,8 +17,41 @@ Reproducible 2.5D ischemic stroke lesion segmentation pipeline for ISLES 2022, w
 - A reproducible train-evaluate-ensemble workflow for ISLES 2022 lesion segmentation
 - Two related segmentation models: a nearby-slice model and a wide-context model
 - Ensemble evaluation for a lightweight alternative to full 3D segmentation
+- Richer evaluation utilities including threshold sweep, postprocess sweep, probability-map reuse, temperature fitting, and extra non-Dice metrics
 - Portfolio-ready documentation for external review
 - A no-data smoke test that checks the public bundle in under a minute
+
+### Metric snapshot beyond Dice
+
+Final fair test recipe:
+- validation-selected threshold: `0.75`
+- `min_size=32`
+- `prob_filter=0.90`
+
+Final fair test metrics for the ensemble:
+
+| Metric | Value |
+|---|---:|
+| Mean Dice | 0.621 |
+| Voxel precision | 0.856 |
+| Voxel recall | 0.539 |
+| Lesion-wise micro F1 | 0.536 |
+| ASSD | 6.89 mm |
+| HD95 | 21.40 mm |
+| Mean absolute volume error | 15.95 mL |
+
+Compact comparison:
+
+| Split | Model | Dice | Precision | Recall | Lesion F1 |
+|---|---|---:|---:|---:|---:|
+| Validation | Nearby-slice model | 0.704 | 0.859 | 0.813 | 0.513 |
+| Validation | Wide-context model | 0.713 | 0.830 | 0.827 | 0.543 |
+| Validation | Ensemble | 0.722 | 0.803 | 0.865 | 0.615 |
+| Test | Nearby-slice model | 0.588 | 0.874 | 0.449 | 0.416 |
+| Test | Wide-context model | 0.624 | 0.892 | 0.485 | 0.471 |
+| Test | Ensemble (fair final) | 0.621 | 0.856 | 0.539 | 0.536 |
+
+Full validation / test comparison note: [artifacts/eval_runs/metrics_comparison_20260311.md](artifacts/eval_runs/metrics_comparison_20260311.md)
 
 ## Internal filename mapping
 
@@ -49,6 +82,8 @@ Some config files and checkpoint examples still preserve historical internal exp
 |---|---:|---|
 | Local test mean Dice | 0.631 | Practical performance snapshot for the bundled 2.5D ensemble recipe |
 | Validation mean Dice | 0.722 | Demonstrates stronger in-distribution validation behavior for the two-model ensemble |
+| Local test lesion-wise F1 | 0.536 | Indicates stronger lesion-level detection quality than Dice alone |
+| Local test voxel recall | 0.539 | Shows the ensemble trades some precision for better lesion coverage |
 | 3D U-Net baseline test Dice | 0.514 | Provides a local comparison anchor |
 | Relative gain vs 3D baseline | +22.8% | Shows the benefit of the 2.5D ensemble in the local test setting |
 
