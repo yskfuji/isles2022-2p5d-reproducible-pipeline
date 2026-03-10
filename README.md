@@ -2,7 +2,7 @@
 
 **Language:** English | [Japanese](README_ja.md)
 
-Reproducible 2.5D ischemic stroke lesion segmentation pipeline for ISLES 2022, with audit-ready documentation, multi-slice ConvNeXt variants, and ensemble-based evaluation.
+Reproducible 2.5D ischemic stroke lesion segmentation pipeline for ISLES 2022, with audit-ready documentation, two related segmentation models, and ensemble-based evaluation.
 
 **Quick links**
 - English entry: [isles2022_25d/README_en.md](isles2022_25d/README_en.md)
@@ -15,19 +15,19 @@ Reproducible 2.5D ischemic stroke lesion segmentation pipeline for ISLES 2022, w
 ## What this repository provides
 
 - A reproducible train-evaluate-ensemble workflow for ISLES 2022 lesion segmentation
-- 2.5D ConvNeXt baselines with explicit differences between the 5-slice model and the 7-slice dilated model
+- Two related segmentation models: a nearby-slice model and a wide-context model
 - Ensemble evaluation for a lightweight alternative to full 3D segmentation
 - Portfolio-ready documentation for external review
 - A no-data smoke test that checks the public bundle in under a minute
 
 ## Internal filename mapping
 
-Some config files and checkpoint examples still preserve historical internal experiment names. In public-facing documents, use the following mapping:
+Some config files and checkpoint examples still preserve historical internal experiment names. Both models share the same overall design: a ConvNeXt encoder with a U-Net-style decoder.
 
 | Internal name in files | Public-facing meaning |
 |---|---|
-| `convnext_v2_5slice_1mm` | 5-slice ConvNeXt model |
-| `convnext_v3_7slice_dilated_1mm` | 7-slice dilated ConvNeXt model |
+| `convnext_v2_5slice_1mm` | Nearby-slice model (5 slices) |
+| `convnext_v3_7slice_dilated_1mm` | Wide-context model (7-slice dilated) |
 
 ## Who this is for
 
@@ -48,7 +48,7 @@ Some config files and checkpoint examples still preserve historical internal exp
 | Metric | Value | Why it matters |
 |---|---:|---|
 | Local test mean Dice | 0.631 | Practical performance snapshot for the bundled 2.5D ensemble recipe |
-| Validation mean Dice | 0.722 | Demonstrates stronger in-distribution validation behavior for the two-ConvNeXt ensemble |
+| Validation mean Dice | 0.722 | Demonstrates stronger in-distribution validation behavior for the two-model ensemble |
 | 3D U-Net baseline test Dice | 0.514 | Provides a local comparison anchor |
 | Relative gain vs 3D baseline | +22.8% | Shows the benefit of the 2.5D ensemble in the local test setting |
 

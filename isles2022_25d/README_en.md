@@ -27,8 +27,8 @@ This folder is the **public entry point** for the ISLES 2022 2.5D lesion-segment
 
 | Internal name in files | Public-facing meaning |
 |---|---|
-| `convnext_v2_5slice_1mm` | 5-slice ConvNeXt model |
-| `convnext_v3_7slice_dilated_1mm` | 7-slice dilated ConvNeXt model |
+| `convnext_v2_5slice_1mm` | Nearby-slice model (5 slices) |
+| `convnext_v3_7slice_dilated_1mm` | Wide-context model (7-slice dilated) |
 
 ## Stable Portfolio Version
 
@@ -71,16 +71,16 @@ organized so a third party can understand and rerun the pipeline with their own 
 
 Run the commands below from `github_public_isles_25d/core/pipeline/`.
 
-> Note: some config filenames and checkpoint paths still use the historical internal labels `convnext_v2` and `convnext_v3`. In public-facing documentation, these are described as the **5-slice ConvNeXt model** and the **7-slice dilated ConvNeXt model**.
+> Note: some config filenames and checkpoint paths still use the historical internal labels `convnext_v2` and `convnext_v3`. In public-facing documentation, these are described as the **nearby-slice model (5 slices)** and the **wide-context model (7-slice dilated)**.
 
-### 2.1 Train the 5-slice model
+### 2.1 Train the nearby-slice model
 
 ```bash
 python -m src.training.train_isles_25d_convnext_fpn \
   --config configs/train_convnext_v2_5slice_1mm.yaml
 ```
 
-### 2.2 Train the 7-slice dilated model
+### 2.2 Train the wide-context model
 
 ```bash
 python -m src.training.train_isles_25d_convnext_fpn \
@@ -115,7 +115,7 @@ python -m src.evaluation.evaluate_isles_25d_ensemble \
 
 ## 3. Current highlights (portfolio notes)
 
-- The pipeline centers on two 2.5D ConvNeXt variants, comparing a 5-slice ConvNeXt model with a 7-slice dilated ConvNeXt model and their ensemble effect.
+- The pipeline centers on two related segmentation models, comparing a nearby-slice model with a wide-context model and their ensemble effect.
 - Small-lesion handling is supported through settings such as Tversky loss, OHEM, and EMA.
 - Existing reports include ensemble runs with mean Dice around 0.631 on the local test setting, depending on configuration.
 

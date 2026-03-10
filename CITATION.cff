@@ -1,6 +1,6 @@
 cff-version: 1.2.0
 message: "If you use this repository, please cite it as follows."
-title: "ISLES 2022 2.5D ConvNeXt Pipeline"
+title: "ISLES 2022 2.5D Lesion Segmentation Pipeline"
 type: software
 version: "isles2022-2p5d-v1.0-interview"
 date-released: "2026-03-10"
@@ -10,9 +10,9 @@ authors:
 repository-code: "https://github.com/yskfuji/isles2022-2p5d-reproducible-pipeline"
 url: "https://github.com/yskfuji/isles2022-2p5d-reproducible-pipeline"
 abstract: >-
-  2.5D ConvNeXt ensemble pipeline for ISLES 2022 ischemic stroke lesion segmentation.
+  2.5D ensemble pipeline for ISLES 2022 ischemic stroke lesion segmentation.
   Achieves test mean Dice 0.631 (+22.8% relative vs 3D U-Net baseline) using a
-  5-slice model and 7-slice dilated model ensemble with Tversky loss and EMA.
+  nearby-slice model and a wide-context model with Tversky loss and EMA.
 keywords:
   - medical-imaging
   - segmentation
