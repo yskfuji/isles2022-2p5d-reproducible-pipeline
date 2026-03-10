@@ -9,7 +9,7 @@ from datetime import datetime, UTC
 from pathlib import Path
 from typing import Any
 
-REPO_NAME = "isles2022-25d-pipeline"
+REPO_NAME = "isles2022-2p5d-reproducible-pipeline"
 REQUIRED_PATHS = [
     "README.md",
     "sample_manifest.json",

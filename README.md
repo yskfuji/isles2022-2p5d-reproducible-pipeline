@@ -1,51 +1,49 @@
-# isles2022-25d-pipeline
+# isles2022-2p5d-reproducible-pipeline
 
 **Language:** English | [Japanese](README_ja.md)
 
-ISLES 2022 ischemic stroke lesion segmentation using a **2.5D ConvNeXt ensemble** — test mean Dice **0.631** (+22.8% relative vs 3D U-Net baseline).
+Reproducible 2.5D ischemic stroke lesion segmentation pipeline for ISLES 2022, with audit-ready documentation, multi-slice ConvNeXt variants, and ensemble-based evaluation.
 
 **Quick links**
 - English entry: [isles2022_25d/README_en.md](isles2022_25d/README_en.md)
 - Japanese entry: [isles2022_25d/README.md](isles2022_25d/README.md)
+- Detailed documentation: [isles2022_25d/README_en.md](isles2022_25d/README_en.md)
 - Citation: [CITATION.cff](CITATION.cff)
 - Release note source: [docs/releases/v1.0-interview.md](docs/releases/v1.0-interview.md)
 - Roadmap: [ROADMAP.md](ROADMAP.md)
 
 ## What this repository provides
 
-- A 2.5D ConvNeXt-based pipeline for ISLES 2022 ischemic stroke lesion segmentation
-- Two complementary model variants (v2: 5-slice, v3: 7-slice dilated) and a probability-map ensemble
-- Tversky loss and EMA for improved small-lesion recall
-- End-to-end workflow: train → single-model evaluate → ensemble evaluate
+- A reproducible train-evaluate-ensemble workflow for ISLES 2022 lesion segmentation
+- 2.5D ConvNeXt baselines with explicit slice-stack design differences between v2 and v3
+- Ensemble evaluation for a lightweight alternative to full 3D segmentation
 - Portfolio-ready documentation for external review
 - A no-data smoke test that checks the public bundle in under a minute
 
 ## Who this is for
 
 - Hiring managers reviewing medical AI segmentation work
-- ML engineers looking for a lightweight 2.5D convolutional segmentation approach
-- Researchers building on ISLES 2022 lesion segmentation baselines
+- ML engineers looking for an auditable MRI segmentation baseline
+- Researchers looking for a reproducible ISLES-style 2.5D project structure
 
 ## 3-minute overview
 
-![2.5D ConvNeXt architecture](docs/assets/architecture.svg)
+![ISLES 2.5D architecture](docs/assets/architecture.svg)
 
-![Repository structure](docs/assets/repo_map.svg)
+![ISLES 2.5D repository map](docs/assets/repo_map.svg)
 
-![Results snapshot](docs/assets/results_snapshot.svg)
+![ISLES 2.5D metrics snapshot](docs/assets/results_snapshot.svg)
 
-### Results
+### Representative results
 
-| Model | val mean Dice | test mean Dice |
-|-------|:---:|:---:|
-| 3D U-Net baseline | 0.652 | 0.514 |
-| ConvNeXt 2.5D v2 (5-slice) | 0.704 | ~0.58 |
-| ConvNeXt 2.5D v3 (7-slice dilated) | 0.690 | 0.579 |
-| **v2 + v3 ensemble** | **0.722** | **0.631** |
+| Metric | Value | Why it matters |
+|---|---:|---|
+| Local test mean Dice | 0.631 | Practical performance snapshot for the bundled 2.5D ensemble recipe |
+| Validation mean Dice | 0.722 | Demonstrates stronger in-distribution validation behavior for the ensemble |
+| 3D U-Net baseline test Dice | 0.514 | Provides a local comparison anchor |
+| Relative gain vs 3D baseline | +22.8% | Shows the benefit of the 2.5D ensemble in the local test setting |
 
-vs. 3D U-Net baseline: **test +0.117 (+22.8% relative)**
-
-> Note: values come from local evaluation on the ISLES 2022 split. Protected medical data is not included in this repository.
+> Notes: values are configuration-dependent and come from the bundled recipe / evaluation notes. Protected medical data is intentionally not included.
 
 ## Quickstart
 
@@ -64,16 +62,16 @@ python tools/make_manifest.py
 
 ### 3. Run full training / evaluation with your own data
 
-- English guide: [isles2022_25d/README_en.md](isles2022_25d/README_en.md)
-- Japanese guide: [isles2022_25d/README.md](isles2022_25d/README.md)
+- Full guide in English: [isles2022_25d/README_en.md](isles2022_25d/README_en.md)
+- Full guide in Japanese: [isles2022_25d/README.md](isles2022_25d/README.md)
 
 ## What is included vs excluded
 
 Included:
-- source code (models, datasets, training, evaluation)
-- configs (v2 / v3 / vanilla 2.5D UNet)
-- documentation and release notes
-- static summary figures
+- source code
+- configs
+- audit and evaluation documentation
+- static summary figures and release-note sources
 
 Not included:
 - `Datasets/`
@@ -81,9 +79,11 @@ Not included:
 - `results/`
 - `logs/`
 
-## Related
+## Stable portfolio version
 
-- **3D U-Net baseline**: [isles2022-3d-reproducible-pipeline](https://github.com/yskfuji/isles2022-3d-reproducible-pipeline)
+Active development continues in this repository. The stable snapshot used for portfolio and interview review is:
+
+✅ `isles2022-2p5d-v1.0-interview`
 
 ## How to cite
 
@@ -91,9 +91,9 @@ See [CITATION.cff](CITATION.cff).
 
 ## Commit message convention
 
-Future commits follow Conventional Commits (`type: summary`):
+To keep ongoing changes reviewable, future commits follow Conventional Commits (`type: summary`):
 
 - `fix: threshold default in eval script`
-- `feat: add TTA support`
-- `refactor: dataset loader`
-- `docs: clarify v2 vs v3 config differences`
+- `feat: add ensemble calibration notes`
+- `refactor: slice sampler validation`
+- `docs: clarify v2 vs v3 evaluation protocol`

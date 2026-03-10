@@ -1,8 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="380" viewBox="0 0 1200 380" role="img" aria-labelledby="title desc">
   <title id="title">ISLES 2.5D repository structure</title>
-  <desc id="desc">Directory layout of the isles2022-25d-pipeline public repository.</desc>
+  <desc id="desc">Directory layout of the isles2022-2p5d-reproducible-pipeline public repository.</desc>
   <rect width="1200" height="380" fill="#0f172a"/>
-  <text x="60" y="48" fill="#f8fafc" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700">isles2022-25d-pipeline — Repository Map</text>
+  <text x="60" y="48" fill="#f8fafc" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700">isles2022-2p5d-reproducible-pipeline — Repository Map</text>
 
   <!-- Root files column -->
   <text x="60" y="90" fill="#94a3b8" font-family="monospace" font-size="12" font-weight="700">Root</text>

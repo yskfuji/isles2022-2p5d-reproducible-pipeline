@@ -1,5 +1,5 @@
 {
-  "repo": "isles2022-25d-pipeline",
+  "repo": "isles2022-2p5d-reproducible-pipeline",
   "task": "ischemic stroke lesion segmentation (2.5D)",
   "dataset_mode": "dummy",
   "sample_cases": [

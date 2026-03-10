@@ -9,4 +9,4 @@ ISLES 2022 ischemic stroke lesion segmentation with a 2.5D ConvNeXt ensemble —
 medical-imaging, segmentation, convnext, 2-5d, mri, stroke, isles2022, pytorch, ensemble, healthcare-ai
 
 ## Website
-https://github.com/yskfuji/isles2022-25d-pipeline
+https://github.com/yskfuji/isles2022-2p5d-reproducible-pipeline

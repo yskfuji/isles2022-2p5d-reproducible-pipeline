@@ -1,8 +1,8 @@
 blank_issues_enabled: true
 contact_links:
   - name: Public roadmap
-    url: https://github.com/yskfuji/isles2022-25d-pipeline/blob/main/ROADMAP.md
+    url: https://github.com/yskfuji/isles2022-2p5d-reproducible-pipeline/blob/main/ROADMAP.md
     about: See the current public hardening roadmap before opening a new issue.
   - name: Detailed reproduction guide
-    url: https://github.com/yskfuji/isles2022-25d-pipeline/blob/main/isles2022_25d/README_en.md
+    url: https://github.com/yskfuji/isles2022-2p5d-reproducible-pipeline/blob/main/isles2022_25d/README_en.md
     about: Full training and evaluation instructions.
