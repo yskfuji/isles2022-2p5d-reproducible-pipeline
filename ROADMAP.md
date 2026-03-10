@@ -10,7 +10,7 @@
 ## Phase 2 — Trust and reuse
 - [x] Add `CITATION.cff`
 - [x] Add release-note source files under `docs/releases/`
-- [ ] Add a reproducibility checklist page for external reviewers
+- [x] Add a reproducibility checklist page for external reviewers
 - [ ] Expand the benchmark summary with per-lesion-size metrics
 
 ## Phase 3 — Distribution
