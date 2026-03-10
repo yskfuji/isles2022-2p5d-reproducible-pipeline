@@ -1,7 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="400" viewBox="0 0 1200 400" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="420" viewBox="0 0 1200 420" role="img" aria-labelledby="title desc">
   <title id="title">2.5D ConvNeXt pipeline architecture</title>
   <desc id="desc">Flow from multi-slice MRI input to ConvNeXt encoder, U-Net decoder, and lesion probability output.</desc>
-  <rect width="1200" height="400" fill="#0f172a"/>
+  <rect width="1200" height="420" fill="#0f172a"/>
   <text x="60" y="52" fill="#f8fafc" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700">ISLES 2022 — 2.5D ConvNeXt Pipeline Overview</text>
 
   <!-- Input block -->
@@ -53,28 +53,28 @@
   <line x1="700" y1="200" x2="740" y2="200" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
 
   <!-- Loss block -->
-  <rect x="740" y="100" width="180" height="200" rx="8" fill="#1e3a5f" stroke="#f43f5e" stroke-width="2"/>
+  <rect x="730" y="100" width="200" height="200" rx="8" fill="#1e3a5f" stroke="#f43f5e" stroke-width="2"/>
   <text x="830" y="130" fill="#fda4af" font-family="Arial" font-size="13" font-weight="700" text-anchor="middle">Loss</text>
-  <text x="830" y="158" fill="#fbbf24" font-family="Arial" font-size="11" text-anchor="middle">5-slice: Dice-OHEM-BCE</text>
-  <text x="830" y="185" fill="#34d399" font-family="Arial" font-size="11" text-anchor="middle">7-slice: Tversky-OHEM-BCE</text>
+  <text x="830" y="158" fill="#fbbf24" font-family="Arial" font-size="10" text-anchor="middle">5-slice: Dice-OHEM-BCE</text>
+  <text x="830" y="185" fill="#34d399" font-family="Arial" font-size="10" text-anchor="middle">7-slice: Tversky-OHEM-BCE</text>
   <text x="830" y="203" fill="#94a3b8" font-family="Arial" font-size="10" text-anchor="middle">α=0.3, β=0.7</text>
-  <line x1="760" y1="220" x2="900" y2="220" stroke="#475569" stroke-width="1"/>
+  <line x1="750" y1="220" x2="910" y2="220" stroke="#475569" stroke-width="1"/>
   <text x="830" y="240" fill="#cbd5e1" font-family="Arial" font-size="11" text-anchor="middle">EMA (7-slice only)</text>
   <text x="830" y="258" fill="#94a3b8" font-family="Arial" font-size="10" text-anchor="middle">decay=0.9998</text>
   <text x="830" y="278" fill="#cbd5e1" font-family="Arial" font-size="11" text-anchor="middle">pos_oversample</text>
 
   <!-- arrow -->
-  <line x1="920" y1="200" x2="960" y2="200" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="930" y1="200" x2="960" y2="200" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
 
   <!-- Ensemble block -->
-  <rect x="960" y="100" width="200" height="200" rx="8" fill="#1e3a5f" stroke="#10b981" stroke-width="2"/>
+  <rect x="960" y="100" width="210" height="200" rx="8" fill="#1e3a5f" stroke="#10b981" stroke-width="2"/>
   <text x="1060" y="130" fill="#6ee7b7" font-family="Arial" font-size="13" font-weight="700" text-anchor="middle">Ensemble</text>
-  <line x1="980" y1="145" x2="1140" y2="145" stroke="#475569" stroke-width="1"/>
+  <line x1="980" y1="145" x2="1150" y2="145" stroke="#475569" stroke-width="1"/>
   <text x="1060" y="168" fill="#fbbf24" font-family="Arial" font-size="11" text-anchor="middle">5-slice prob map</text>
   <text x="1060" y="190" fill="#94a3b8" font-family="Arial" font-size="11" text-anchor="middle">+</text>
   <text x="1060" y="212" fill="#34d399" font-family="Arial" font-size="11" text-anchor="middle">7-slice prob map</text>
   <text x="1060" y="234" fill="#94a3b8" font-family="Arial" font-size="11" text-anchor="middle">avg ÷ 2</text>
-  <line x1="980" y1="248" x2="1140" y2="248" stroke="#475569" stroke-width="1"/>
+  <line x1="980" y1="248" x2="1150" y2="248" stroke="#475569" stroke-width="1"/>
   <text x="1060" y="270" fill="#6ee7b7" font-family="Arial" font-size="12" font-weight="700" text-anchor="middle">Dice 0.722 val</text>
   <text x="1060" y="288" fill="#6ee7b7" font-family="Arial" font-size="12" font-weight="700" text-anchor="middle">Dice 0.631 test</text>
 
@@ -86,5 +86,5 @@
   </defs>
 
   <!-- Bottom note -->
-  <text x="600" y="375" fill="#64748b" font-family="Arial" font-size="11" text-anchor="middle">2.5D: adjacent slices stacked as channels → 2D ConvNeXt encoder (no 3D convolutions)</text>
+  <text x="600" y="392" fill="#64748b" font-family="Arial" font-size="11" text-anchor="middle">2.5D: adjacent slices stacked as channels → 2D ConvNeXt encoder (no 3D convolutions)</text>
 </svg>

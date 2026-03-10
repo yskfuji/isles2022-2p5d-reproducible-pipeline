@@ -18,22 +18,22 @@
 
   <!-- Row 2 -->
   <rect x="60" y="140" width="600" height="34" fill="#172032"/>
-  <text x="80"  y="162" fill="#fbbf24" font-family="Arial" font-size="12">ConvNeXt 2.5D (5-slice)</text>
+  <text x="80"  y="162" fill="#fbbf24" font-family="Arial" font-size="11">ConvNeXt 2.5D (5-slice)</text>
   <text x="380" y="162" fill="#fbbf24" font-family="Arial" font-size="12" text-anchor="middle">0.704</text>
   <text x="570" y="162" fill="#fbbf24" font-family="Arial" font-size="12" text-anchor="middle">~0.58</text>
 
   <!-- Row 3 -->
   <rect x="60" y="174" width="600" height="34" fill="#1e293b"/>
-  <text x="80"  y="196" fill="#34d399" font-family="Arial" font-size="12">ConvNeXt 2.5D (7-slice dilated)</text>
+  <text x="80"  y="196" fill="#34d399" font-family="Arial" font-size="11">ConvNeXt 2.5D (7-slice dilated)</text>
   <text x="380" y="196" fill="#34d399" font-family="Arial" font-size="12" text-anchor="middle">0.690</text>
   <text x="570" y="196" fill="#34d399" font-family="Arial" font-size="12" text-anchor="middle">0.579</text>
 
   <!-- Row 4 (best) -->
   <rect x="60" y="208" width="600" height="36" rx="0" fill="#1e3a1e" stroke="#10b981" stroke-width="1.5"/>
-  <text x="80"  y="231" fill="#6ee7b7" font-family="Arial" font-size="13" font-weight="700">5-slice + 7-slice ensemble</text>
+  <text x="80"  y="231" fill="#6ee7b7" font-family="Arial" font-size="11" font-weight="700">Ensemble (5-slice + 7-slice)</text>
   <text x="380" y="231" fill="#6ee7b7" font-family="Arial" font-size="13" font-weight="700" text-anchor="middle">0.722</text>
   <text x="570" y="231" fill="#6ee7b7" font-family="Arial" font-size="13" font-weight="700" text-anchor="middle">0.631</text>
-  <text x="700" y="231" fill="#6ee7b7" font-family="Arial" font-size="11">← best</text>
+  <text x="690" y="231" fill="#6ee7b7" font-family="Arial" font-size="10">← best</text>
 
   <!-- improvement note -->
   <text x="60" y="270" fill="#64748b" font-family="Arial" font-size="12">vs. 3D U-Net baseline:</text>

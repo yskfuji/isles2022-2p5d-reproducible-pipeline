@@ -20,6 +20,15 @@ Reproducible 2.5D ischemic stroke lesion segmentation pipeline for ISLES 2022, w
 - Portfolio-ready documentation for external review
 - A no-data smoke test that checks the public bundle in under a minute
 
+## Internal filename mapping
+
+Some config files and checkpoint examples still preserve historical internal experiment names. In public-facing documents, use the following mapping:
+
+| Internal name in files | Public-facing meaning |
+|---|---|
+| `convnext_v2_5slice_1mm` | 5-slice model |
+| `convnext_v3_7slice_dilated_1mm` | 7-slice dilated model |
+
 ## Who this is for
 
 - Hiring managers reviewing medical AI segmentation work

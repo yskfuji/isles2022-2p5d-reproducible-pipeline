@@ -23,6 +23,13 @@ This folder is the **public entry point** for the ISLES 2022 2.5D lesion-segment
 - Release-note source: `../docs/releases/v1.0-interview.md`
 - Roadmap: `../ROADMAP.md`
 
+## Internal filename mapping
+
+| Internal name in files | Public-facing meaning |
+|---|---|
+| `convnext_v2_5slice_1mm` | 5-slice model |
+| `convnext_v3_7slice_dilated_1mm` | 7-slice dilated model |
+
 ## Stable Portfolio Version
 
 The reproducible evaluation reviewed during recruitment corresponds to:
