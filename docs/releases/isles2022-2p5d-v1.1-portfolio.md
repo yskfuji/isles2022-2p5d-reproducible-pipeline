@@ -1,12 +1,10 @@
-# ISLES 2022 2.5D public snapshot — `isles2022-2p5d-v1.0-interview`
-
-> Historical interview snapshot. The current portfolio snapshot is `isles2022-2p5d-v1.1-portfolio`.
+# ISLES 2022 2.5D public snapshot — `isles2022-2p5d-v1.1-portfolio`
 
 ## Purpose
-A stable portfolio snapshot for hiring review and external technical inspection.
+A portfolio snapshot that reflects the current public documentation, benchmark-summary tables, and wording cleanup.
 
 ## Snapshot type
-Stable review build.
+Current portfolio release.
 
 ## Reviewer starting points
 - README: repository overview, key metrics, and quickstart
@@ -14,14 +12,14 @@ Stable review build.
 - AUDIT_MAP.md: where major public artifacts and commands live
 
 ## Reproduced scope
-- ISLES 2022 lesion segmentation with 2.5D ConvNeXt pipeline
-- Two related segmentation models: a nearby-slice model (5 slices, Dice-OHEM-BCE, 100ep) and a wide-context model (7-slice dilated, Tversky-OHEM-BCE, EMA, 150ep)
-- Probability-map average ensemble of the two models
+- ISLES 2022 lesion segmentation with the 2.5D ConvNeXt pipeline
+- Two related segmentation models and their probability-map ensemble
 - Single-model and ensemble evaluation with TTA support
+- Benchmark-summary tables for validation, local test, and lesion-size buckets
 
 ## Key results in this snapshot
 - val mean Dice: **0.722** (ensemble), 0.704 (nearby-slice model), 0.690 (wide-context model)
-- test mean Dice: **0.631** (ensemble), ~0.58 (nearby-slice model), 0.579 (wide-context model)
+- local-test mean Dice: **0.631** (bundled ensemble recipe)
 - vs. 3D U-Net baseline (test 0.514): **+0.117 (+22.8% relative)**
 
 ## Main strengths in this snapshot

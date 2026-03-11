@@ -2,8 +2,8 @@ cff-version: 1.2.0
 message: "If you use this repository, please cite it as follows."
 title: "ISLES 2022 2.5D Lesion Segmentation Pipeline"
 type: software
-version: "isles2022-2p5d-v1.0-interview"
-date-released: "2026-03-10"
+version: "isles2022-2p5d-v1.1-portfolio"
+date-released: "2026-03-11"
 authors:
   - family-names: "Fujinami"
     given-names: "Yusuke"

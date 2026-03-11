@@ -20,7 +20,7 @@ This folder is the **public entry point** for the ISLES 2022 2.5D lesion-segment
 - Japanese version: [README.md](README.md)
 - Detailed code / experiments: `../core/pipeline/`
 - Citation: `../CITATION.cff`
-- Release-note source: `../docs/releases/v1.0-interview.md`
+- Release-note source: `../docs/releases/isles2022-2p5d-v1.1-portfolio.md`
 - Roadmap: `../ROADMAP.md`
 
 ## Internal filename mapping
@@ -32,9 +32,9 @@ This folder is the **public entry point** for the ISLES 2022 2.5D lesion-segment
 
 ## Stable Portfolio Version
 
-The reproducible evaluation reviewed during recruitment corresponds to:
+The current portfolio snapshot corresponds to:
 
-✅ `isles2022-2p5d-v1.0-interview`
+✅ `isles2022-2p5d-v1.1-portfolio`
 
 Active development continues on the repository.
 

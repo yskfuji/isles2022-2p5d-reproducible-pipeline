@@ -5,7 +5,7 @@
 - [x] Add static overview figures for architecture, repository map, and metrics
 - [x] Add a no-data smoke test
 - [ ] Set GitHub About description/topics/homepage in the web UI
-- [ ] Publish GitHub Release notes for the portfolio snapshot tag
+- [ ] Publish GitHub Release notes for the current portfolio snapshot tag
 
 ## Phase 2 — Trust and reuse
 - [x] Add `CITATION.cff`

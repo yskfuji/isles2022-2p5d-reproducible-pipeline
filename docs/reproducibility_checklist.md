@@ -12,7 +12,7 @@ Use this page as a fast external-review checklist for the public ISLES 2022 2.5D
 
 - Read the landing page: `README.md` or `README_ja.md`.
 - Read the task-facing guide: `isles2022_25d/README_en.md` or `isles2022_25d/README.md`.
-- Read the release note source under `docs/releases/v1.0-interview.md`.
+- Read the release note source under `docs/releases/isles2022-2p5d-v1.1-portfolio.md`.
 - Confirm the reported ensemble metrics and model naming are consistent across those files.
 
 ## 3. Code-path sanity

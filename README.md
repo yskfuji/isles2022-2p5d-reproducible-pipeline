@@ -11,7 +11,7 @@ Reproducible 2.5D ischemic stroke lesion segmentation pipeline for ISLES 2022, w
 - Reproducibility checklist: [docs/reproducibility_checklist.md](docs/reproducibility_checklist.md)
 - GitHub About settings: [EN](docs/github_about.md) | [JA](docs/github_about_ja.md)
 - Citation: [CITATION.cff](CITATION.cff)
-- Release note source: [EN](docs/releases/v1.0-interview.md) | [JA](docs/releases/v1.0-interview_ja.md)
+- Release note source: [EN](docs/releases/isles2022-2p5d-v1.1-portfolio.md) | [JA](docs/releases/isles2022-2p5d-v1.1-portfolio_ja.md)
 - Roadmap: [ROADMAP.md](ROADMAP.md)
 
 ## What this repository provides
@@ -127,9 +127,9 @@ Not included:
 
 ## Stable portfolio version
 
-Active development continues in this repository. The stable snapshot used for portfolio and interview review is:
+Active development continues in this repository. The current portfolio snapshot is:
 
-✅ `isles2022-2p5d-v1.0-interview`
+✅ `isles2022-2p5d-v1.1-portfolio`
 
 ## How to cite
 
