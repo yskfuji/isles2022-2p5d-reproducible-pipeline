@@ -30,7 +30,7 @@ This folder is the **public entry point** for the ISLES 2022 2.5D lesion-segment
 | `convnext_v2_5slice_1mm` | Nearby-slice model (5 slices) |
 | `convnext_v3_7slice_dilated_1mm` | Wide-context model (7-slice dilated) |
 
-## Stable Portfolio Version
+## Current Portfolio Snapshot
 
 The current portfolio snapshot corresponds to:
 
