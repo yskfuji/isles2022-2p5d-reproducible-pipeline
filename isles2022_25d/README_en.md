@@ -50,6 +50,36 @@ organized so a third party can understand and rerun the pipeline with their own 
 - `Datasets/`, `runs/`, and `results/` are intentionally excluded from this public export.
 - The fastest way to understand the project is: train → evaluate → ensemble.
 
+## Benchmark summary
+
+### Ensemble snapshot used in the public bundle
+
+| Split | Recipe | Mean Dice | Global precision | Global recall | Lesion F1 |
+|---|---|---:|---:|---:|---:|
+| Validation | Ensemble, `thr=0.85`, `min_size=32`, `prob_filter=0.96` | 0.721 | 0.854 | 0.815 | 0.501 |
+| Local test | Ensemble, `thr=0.70`, `min_size=32`, `prob_filter=0.70` | 0.631 | 0.861 | 0.500 | 0.648 |
+
+### Size-stratified ensemble Dice
+
+Buckets follow the evaluator default: small `<250` vox, medium `250-999` vox, large `>=1000` vox.
+
+Validation ensemble recipe:
+
+| GT lesion size | Cases | Mean Dice | Median Dice | Detection rate | Lesion F1 |
+|---|---:|---:|---:|---:|---:|
+| Small | 4 | 0.3952 | 0.2903 | 0.25 | 0.1667 |
+| Medium | 2 | 0.7005 | 0.7005 | 1.00 | 0.8333 |
+| Large | 19 | 0.7924 | 0.8322 | 1.00 | 0.5370 |
+
+Local-test ensemble recipe:
+
+| GT lesion size | Cases | Mean Dice | Median Dice | Detection rate | Lesion F1 |
+|---|---:|---:|---:|---:|---:|
+| Medium | 3 | 0.3652 | 0.3833 | 1.00 | 0.7333 |
+| Large | 22 | 0.6674 | 0.7352 | 1.00 | 0.6360 |
+
+Note: the root README links a stricter fair-final comparison note separately; the tables above summarize the bundled portfolio recipes used in this detailed entry page.
+
 ---
 
 ## 1. Code map
