@@ -164,9 +164,43 @@ When `--mlflow` is enabled, this repository follows the same public tracking sch
   - `checkpoints/`: `last.pt`, `best.pt`, and any task-specific best-checkpoint variants
 - Goal: make run review easier across segmentation and classification repos without claiming a production MLOps platform
 
+## 4. Model registration stage
+
+The next MLOps step in this public portfolio is a registry-ready bundle created from a completed training run.
+
+```bash
+python tools/register_model.py \
+  --run-dir runs/convnext_v3_7slice_dilated_1mm/<YOUR_RUN> \
+  --model-name isles-25d-convnext \
+  --version-label ensemble-candidate \
+  --checkpoint best.pt \
+  --selection-reason "candidate for 2.5D ensemble promotion"
+```
+
+This command creates `artifacts/registered_models/<model-name>/<version-label>/` and stores:
+
+- `registration.json`
+- `run_metadata/`
+- `training_trace/`
+- `checkpoints/`
+
+Optional MLflow handoff:
+
+```bash
+python tools/register_model.py \
+  --run-dir runs/convnext_v3_7slice_dilated_1mm/<YOUR_RUN> \
+  --model-name isles-25d-convnext \
+  --version-label ensemble-candidate \
+  --checkpoint best.pt \
+  --mlflow-register \
+  --mlflow-experiment isles-model-registration \
+  --registered-model-name isles-25d-convnext \
+  --registered-model-alias candidate
+```
+
 ---
 
-## 4. Current highlights (portfolio notes)
+## 5. Current highlights (portfolio notes)
 
 - The pipeline centers on two related segmentation models, comparing a nearby-slice model with a wide-context model and their ensemble effect.
 - Small-lesion handling is supported through settings such as Tversky loss, OHEM, and EMA.
@@ -175,7 +209,7 @@ When `--mlflow` is enabled, this repository follows the same public tracking sch
 
 ---
 
-## 5. Additional notes
+## 6. Additional notes
 
 - The 2.5D setup assumes preprocessed volumes prepared through the 3D pipeline.
 - For the comparison baseline, see `isles2022-3d-reproducible-pipeline`.

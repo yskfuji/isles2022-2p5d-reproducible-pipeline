@@ -166,9 +166,43 @@ python -m src.evaluation.evaluate_isles_25d_ensemble \
   - `checkpoints/`: `last.pt`, `best.pt`, およびタスク固有の best 系チェックポイント
 - 目的: セグメンテーション系と分類系の run を同じ見方で追えるようにしつつ、本格的な本番用 MLOps 基盤を主張しないこと
 
+## 4. モデル登録ステージ
+
+この公開ポートフォリオでの次の MLOps 段階は、学習済み run から registry-ready な bundle を作ることです。
+
+```bash
+python tools/register_model.py \
+  --run-dir runs/convnext_v3_7slice_dilated_1mm/<YOUR_RUN> \
+  --model-name isles-25d-convnext \
+  --version-label ensemble-candidate \
+  --checkpoint best.pt \
+  --selection-reason "2.5D アンサンブル候補として昇格"
+```
+
+このコマンドで `artifacts/registered_models/<model-name>/<version-label>/` を作り、以下をまとめます。
+
+- `registration.json`
+- `run_metadata/`
+- `training_trace/`
+- `checkpoints/`
+
+MLflow へ引き渡す場合の例:
+
+```bash
+python tools/register_model.py \
+  --run-dir runs/convnext_v3_7slice_dilated_1mm/<YOUR_RUN> \
+  --model-name isles-25d-convnext \
+  --version-label ensemble-candidate \
+  --checkpoint best.pt \
+  --mlflow-register \
+  --mlflow-experiment isles-model-registration \
+  --registered-model-name isles-25d-convnext \
+  --registered-model-alias candidate
+```
+
 ---
 
-## 4. 現時点の要点（ポートフォリオ向け）
+## 5. 現時点の要点（ポートフォリオ向け）
 
 - 同系統の 2 モデルとして、近傍重視モデルと広域文脈モデルの設計上の違い、およびそのアンサンブル効果を検証しています。
 - 小病変への対応として、Tversky loss、OHEM、EMA を組み合わせた設定を使っています。
@@ -177,7 +211,7 @@ python -m src.evaluation.evaluate_isles_25d_ensemble \
 
 ---
 
-## 5. 追加メモ
+## 6. 追加メモ
 
 - 2.5D 版は 3D 前処理済みデータを前提にしています。
 - 比較用 3D ベースラインは `isles2022-3d-reproducible-pipeline` を参照してください。
