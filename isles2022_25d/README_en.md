@@ -201,9 +201,9 @@ python tools/register_model.py \
   --reject-alias needs-review
 ```
 
-Promotion rules are evaluated against the latest metrics in `log.jsonl`. If the rule passes, the configured promotion alias is updated on the created MLflow model version.
+Promotion criteria are evaluated against the latest metrics in `log.jsonl`. If the condition passes, the configured alias is updated on the created MLflow model version.
 
-If you want the verification flow in a single command, use `verify_registration.py`.
+To verify the full handoff in one command, use `verify_registration.py`.
 
 ```bash
 python tools/verify_registration.py \
@@ -215,7 +215,7 @@ python tools/verify_registration.py \
   --registered-model-name isles-25d-convnext-verify
 ```
 
-This wrapper creates a local SQLite-backed MLflow Registry under `artifacts/verification/`, runs `register_model.py`, and prints a compact JSON summary that confirms both `registration.json` and the expected alias.
+This verification wrapper creates a local SQLite-backed MLflow Registry under `artifacts/verification/`, runs `register_model.py`, and prints a compact JSON summary covering both `registration.json` and the expected alias.
 
 ---
 

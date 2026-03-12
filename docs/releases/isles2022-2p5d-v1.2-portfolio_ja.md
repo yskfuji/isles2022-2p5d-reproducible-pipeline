@@ -8,16 +8,16 @@
 
 ## レビュー開始時の導線
 - README: リポジトリ全体の概要、主要指標、クイックスタート
-- docs/reproducibility_checklist.md: 外部レビュー向けの確認項目と合格条件
+- docs/reproducibility_checklist_ja.md: 外部レビュー向けの確認項目と合格条件
 - AUDIT_MAP.md: 主要な公開成果物や実行コマンドの所在
-- core/pipeline/tools/register_model.py: registry-ready な bundle 作成と promotion rule の入口
+- core/pipeline/tools/register_model.py: registry-ready なバンドル作成と昇格条件評価の入口
 
 ## 再現対象の範囲
 - ISLES 2022 病変セグメンテーション向け 2.5D ConvNeXt パイプライン
 - 近傍重視モデルと広域文脈モデルの 2 系統とそのアンサンブル
 - 公開 3 リポジトリで共通化した MLflow 追跡スキーマ
 - 学習済み run からの registry-ready なモデル登録バンドル生成
-- promotion rule 判定と MLflow Registry alias 更新を伴う任意の登録連携
+- 昇格条件の判定と MLflow Registry alias 更新を伴う任意の登録連携
 
 ## このスナップショットの主要結果
 - 検証平均 Dice: 0.722（アンサンブル）、0.704（近傍重視モデル）、0.690（広域文脈モデル）
@@ -27,7 +27,7 @@
 ## このスナップショットの主な強み
 - 軽量な 2.5D 設計: 2D ConvNeXt エンコーダと多枚数スライスのチャネル積み重ね
 - 公開 3 リポジトリで揃えた run metadata / artifact 構成
-- 検証指標に基づく promotion rule を設定可能
+- 検証指標に基づく昇格条件を設定可能
 - candidate や champion へつなげる MLflow Registry alias 更新に対応
 - 自動デプロイを主張せずに見せられる MLOps の進展
 
@@ -35,4 +35,4 @@
 - 機微な医療データは同梱していません
 - GitHub Release の本文はこの原稿ファイルと同期します
 - 簡易動作確認はリポジトリが正しく動くかを確かめるものであり、モデル品質そのものを保証するものではありません
-- promotion rule は最新のログ指標に対して評価するため、最終判断には人手でのしきい値設計が必要です
+- 昇格条件は最新のログ指標に対して評価するため、最終判断には人手でのしきい値設計が必要です

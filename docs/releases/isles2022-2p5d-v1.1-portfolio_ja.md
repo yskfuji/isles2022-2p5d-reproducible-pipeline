@@ -8,7 +8,7 @@
 
 ## レビュー開始時の導線
 - README: リポジトリ全体の概要、主要指標、クイックスタート
-- docs/reproducibility_checklist.md: 外部レビュー向けの確認項目と合格条件
+- docs/reproducibility_checklist_ja.md: 外部レビュー向けの確認項目と合格条件
 - AUDIT_MAP.md: 主要な公開成果物や実行コマンドの所在
 
 ## 再現対象の範囲

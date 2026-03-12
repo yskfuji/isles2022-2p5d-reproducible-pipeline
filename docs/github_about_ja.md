@@ -12,4 +12,4 @@ ISLES 2022 の脳梗塞病変セグメンテーションを対象にした 2.5D 
 medical-imaging, segmentation, convnext, 2-5d, mri, stroke, isles2022, pytorch, ensemble, healthcare-ai
 
 ## ウェブサイト
-https://github.com/yskfuji/isles2022-2p5d-reproducible-pipeline/blob/dev/docs/reproducibility_checklist.md
+https://github.com/yskfuji/isles2022-2p5d-reproducible-pipeline/blob/dev/docs/reproducibility_checklist_ja.md

@@ -203,7 +203,7 @@ python tools/register_model.py \
   --reject-alias needs-review
 ```
 
-promotion rule は `log.jsonl` の最終行にある最新指標に対して評価されます。条件を満たした場合に、作成した MLflow model version へ指定 alias を付けます。
+昇格条件は `log.jsonl` の最終行にある最新指標に対して評価されます。条件を満たした場合に、作成した MLflow model version へ指定 alias を付けます。
 
 検証手順を 1 コマンドにまとめたい場合は、`verify_registration.py` を使います。
 
@@ -217,7 +217,7 @@ python tools/verify_registration.py \
   --registered-model-name isles-25d-convnext-verify
 ```
 
-この verify script は `artifacts/verification/` 配下にローカル SQLite の MLflow Registry と bundle を作り、`registration.json` と期待 alias の両方を確認した要約 JSON を標準出力へ出します。
+この検証スクリプトは `artifacts/verification/` 配下にローカル SQLite の MLflow Registry とバンドルを作り、`registration.json` と期待する alias の両方を確認した要約 JSON を標準出力へ出します。
 
 ---
 
