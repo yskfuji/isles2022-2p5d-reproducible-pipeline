@@ -6,9 +6,14 @@
 ## スナップショットの位置づけ
 現行のポートフォリオ公開版です。
 
+## 最初に見ると分かりやすい順番
+1. README で全体像、主要指標、アンサンブルの位置づけをつかむ
+2. docs/reproducibility_checklist_ja.md でレビュー観点と確認手順を追う
+3. AUDIT_MAP.md で成果物や主要コマンドの所在を確認する
+
 ## レビュー開始時の導線
 - README: リポジトリ全体の概要、主要指標、クイックスタート
-- docs/reproducibility_checklist_ja.md: 外部レビュー向けの確認項目と合格条件
+- docs/reproducibility_checklist_ja.md: 外部レビュー向けの確認項目、確認順序、合格条件
 - AUDIT_MAP.md: 主要な公開成果物や実行コマンドの所在
 - core/pipeline/tools/register_model.py: registry-ready なバンドル作成と昇格条件評価の入口
 
@@ -26,6 +31,7 @@
 
 ## このスナップショットの主な強み
 - 軽量な 2.5D 設計: 2D ConvNeXt エンコーダと多枚数スライスのチャネル積み重ね
+- 日本語チェックリストからレビューを始められるため、確認の抜け漏れを減らしやすい
 - 公開 3 リポジトリで揃えた run metadata / artifact 構成
 - 検証指標に基づく昇格条件を設定可能
 - candidate や champion へつなげる MLflow Registry alias 更新に対応
