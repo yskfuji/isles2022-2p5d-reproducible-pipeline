@@ -13,6 +13,7 @@ from pathlib import Path
 from typing import Any, Callable
 
 import json
+import math
 import yaml
 import numpy as np
 import torch
@@ -27,6 +28,14 @@ from .losses import DiceBCELoss, DiceFocalLoss, DiceOHEMBCELoss, TverskyFocalLos
 from .utils_train import set_seed, prepare_device, AverageMeter, dice_from_logits
 
 app = typer.Typer(add_completion=False)
+
+
+def _safe_mlflow_log_artifact(mlflow_lib: Any, path: Path, *, artifact_path: str | None = None) -> None:
+    try:
+        if path.exists():
+            mlflow_lib.log_artifact(str(path), artifact_path=artifact_path)
+    except Exception:
+        pass
 
 
 def _center_pad_crop_2d(
@@ -157,6 +166,16 @@ def _make_transform(
 def main(
     config: str = typer.Option(..., help="Path to YAML config"),
     resume: str = typer.Option(None, help="Path to last.pt checkpoint to resume from"),
+    mlflow: bool = typer.Option(False, help="Enable MLflow logging. (bool flags: --mlflow/--no-mlflow)"),
+    mlflow_tracking_uri: str | None = typer.Option(
+        None,
+        help="MLflow tracking URI (optional; falls back to MLFLOW_TRACKING_URI env). Requires --mlflow.",
+    ),
+    mlflow_experiment: str = typer.Option("isles-25d-convnext", help="MLflow experiment name (requires --mlflow)."),
+    mlflow_run_name: str | None = typer.Option(
+        None,
+        help="MLflow run name (default: experiment_name; requires --mlflow).",
+    ),
 ) -> None:
     cfg = yaml.safe_load(Path(config).read_text())
 
@@ -376,7 +395,89 @@ def main(
     out_dir.mkdir(parents=True, exist_ok=True)
 
     # Persist config snapshot.
-    (out_dir / "config.yaml").write_text(yaml.safe_dump(cfg, sort_keys=False))
+    config_snapshot_path = out_dir / "config.yaml"
+    config_snapshot_path.write_text(yaml.safe_dump(cfg, sort_keys=False))
+    meta = {
+        "experiment_name": str(cfg.get("experiment_name", "isles_25d_convnext_fpn")),
+        "config_path": str(Path(config).expanduser().resolve()),
+        "out_dir": str(out_dir.resolve()),
+        "seed": int(seed),
+        "device": str(device),
+        "torch_version": str(torch.__version__),
+        "cuda_available": bool(torch.cuda.is_available()),
+        "mps_available": bool(torch.backends.mps.is_available()),
+        "task": "isles2022_lesion_segmentation",
+        "model_family": "2p5d_convnext",
+        "csv_path": str(Path(csv_path).expanduser().resolve()),
+        "root": str(Path(root).expanduser().resolve()),
+        "normalize": str(normalize),
+        "batch_size": int(batch_size),
+        "epochs": int(tr_cfg.get("epochs")),
+        "lr": float(tr_cfg.get("lr")),
+        "weight_decay": float(tr_cfg.get("weight_decay")),
+        "loss": str(tr_cfg.get("loss", "dice_bce")),
+        "img_size": list(img_size) if img_size is not None else None,
+        "k_slices": int(k),
+        "backbone": str(tr_cfg.get("backbone", "convnext_tiny")),
+        "pretrained": bool(tr_cfg.get("pretrained", True)),
+        "n_train_volumes": len(vol_tr),
+        "n_val_volumes": len(vol_va),
+        "n_train_slices": len(ds_tr),
+        "n_val_slices": len(ds_va),
+    }
+    meta_path = out_dir / "meta.json"
+    meta_path.write_text(json.dumps(meta, indent=2, ensure_ascii=False))
+
+    mlflow_lib = None
+    if bool(mlflow):
+        try:
+            import mlflow as _mlflow  # type: ignore[import-not-found]
+        except Exception as e:
+            raise RuntimeError(
+                "--mlflow is enabled but 'mlflow' is not installed. "
+                "Install it (e.g., add to your env) or disable --mlflow."
+            ) from e
+
+        mlflow_lib = _mlflow
+        if mlflow_tracking_uri is not None and str(mlflow_tracking_uri).strip():
+            mlflow_lib.set_tracking_uri(str(mlflow_tracking_uri).strip())
+        mlflow_lib.set_experiment(str(mlflow_experiment).strip())
+        run_name = str(mlflow_run_name).strip() if mlflow_run_name is not None else ""
+        if not run_name:
+            run_name = str(cfg.get("experiment_name", out_dir.name)).strip() or out_dir.name
+        mlflow_lib.start_run(run_name=run_name)
+        mlflow_lib.set_tags(
+            {
+                "repo_name": "github_public_isles_25d",
+                "task_type": "medical_image_segmentation",
+                "model_family": "2p5d_convnext",
+                "tracking_schema": "public_portfolio_v1",
+            }
+        )
+        mlflow_lib.log_params(
+            {
+                "experiment_name": str(cfg.get("experiment_name")),
+                "out_dir": str(out_dir),
+                "seed": str(seed),
+                "device": str(device),
+                "normalize": str(normalize),
+                "backbone": str(tr_cfg.get("backbone", "convnext_tiny")),
+                "pretrained": str(tr_cfg.get("pretrained", True)),
+                "batch_size": str(tr_cfg.get("batch_size")),
+                "epochs": str(tr_cfg.get("epochs")),
+                "lr": str(tr_cfg.get("lr")),
+                "weight_decay": str(tr_cfg.get("weight_decay")),
+                "img_size": str(img_size),
+                "k_slices": str(k),
+                "loss": str(tr_cfg.get("loss", "dice_bce")),
+                "n_train_volumes": str(len(vol_tr)),
+                "n_val_volumes": str(len(vol_va)),
+                "n_train_slices": str(len(ds_tr)),
+                "n_val_slices": str(len(ds_va)),
+            }
+        )
+        _safe_mlflow_log_artifact(mlflow_lib, meta_path, artifact_path="run_metadata")
+        _safe_mlflow_log_artifact(mlflow_lib, config_snapshot_path, artifact_path="run_metadata")
 
     best_val_dice = float("-inf")
     start_epoch = 1
@@ -512,7 +613,33 @@ def main(
         with (out_dir / "log.jsonl").open("a", encoding="utf-8") as f:
             f.write(json.dumps(log) + "\n")
 
+        if mlflow_lib is not None:
+            metrics = {
+                "train_loss": float(meter.avg),
+                "val_loss": float(va_meter.avg),
+                "val_dice": float(val_dice),
+                "best_val_dice": float(best_val_dice),
+                "lr": float(optim.param_groups[0]["lr"]),
+            }
+            mlflow_lib.log_metrics(
+                {k: v for k, v in metrics.items() if math.isfinite(float(v))},
+                step=int(epoch),
+            )
+
         print(f"epoch {epoch} train_loss {meter.avg:.4f} val_loss {va_meter.avg:.4f} val_dice {val_dice:.4f}")
+
+    if mlflow_lib is not None:
+        try:
+            if math.isfinite(float(best_val_dice)):
+                mlflow_lib.log_metric("best_val_dice", float(best_val_dice))
+            _safe_mlflow_log_artifact(mlflow_lib, meta_path, artifact_path="run_metadata")
+            _safe_mlflow_log_artifact(mlflow_lib, config_snapshot_path, artifact_path="run_metadata")
+            _safe_mlflow_log_artifact(mlflow_lib, out_dir / "log.jsonl", artifact_path="training_trace")
+            _safe_mlflow_log_artifact(mlflow_lib, out_dir / "last.pt", artifact_path="checkpoints")
+            _safe_mlflow_log_artifact(mlflow_lib, out_dir / "best.pt", artifact_path="checkpoints")
+            mlflow_lib.end_run()
+        except Exception:
+            pass
 
 
 if __name__ == "__main__":

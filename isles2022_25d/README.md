@@ -112,6 +112,16 @@ python -m src.training.train_isles_25d_convnext_fpn \
   --config configs/train_convnext_v2_5slice_1mm.yaml
 ```
 
+任意の MLflow 連携:
+
+```bash
+python -m src.training.train_isles_25d_convnext_fpn \
+  --config configs/train_convnext_v2_5slice_1mm.yaml \
+  --mlflow --mlflow-experiment isles-25d-convnext
+```
+
+ローカル環境に `mlflow` が入っていない場合は、先に追加してから同じコマンドを実行してください。
+
 ### 2.2 広域文脈モデルの学習
 
 ```bash

@@ -110,6 +110,16 @@ python -m src.training.train_isles_25d_convnext_fpn \
   --config configs/train_convnext_v2_5slice_1mm.yaml
 ```
 
+Optional MLflow tracking:
+
+```bash
+python -m src.training.train_isles_25d_convnext_fpn \
+  --config configs/train_convnext_v2_5slice_1mm.yaml \
+  --mlflow --mlflow-experiment isles-25d-convnext
+```
+
+If `mlflow` is not installed in your local environment, install it first and rerun with the same command.
+
 ### 2.2 Train the wide-context model
 
 ```bash
