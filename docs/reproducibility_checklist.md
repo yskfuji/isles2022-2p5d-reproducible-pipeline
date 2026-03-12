@@ -35,13 +35,19 @@ Use this page as a fast external-review checklist for the public ISLES 2022 2.5D
 - Confirm the final ensemble recipe is explained with threshold and postprocess settings.
 - Confirm the repository explains the mapping between internal experiment names and public-facing names.
 
-## 6. Reviewer pass criteria
+## 6. Registration verification
+
+- Run `python core/pipeline/tools/verify_registration.py --run-dir <REPRESENTATIVE_RUN_DIR> --model-name isles-25d-convnext --checkpoint best.pt --promotion-rule "val_dice>=0.72" --registered-model-name isles-25d-convnext-verify` from the repository root or `python tools/verify_registration.py ...` from `core/pipeline`.
+- Confirm the command creates `artifacts/verification/registered_models/.../registration.json`.
+- Confirm the printed JSON summary reports the expected `promotion_status` and alias outcome.
+
+## 7. Reviewer pass criteria
 
 - A reviewer can understand the two-model setup and the ensemble role in under 3 minutes.
 - A reviewer can trace train -> evaluate -> ensemble without needing hidden scripts.
 - A reviewer can validate repository wiring without access to protected data.
 
-## 7. Known limits
+## 8. Known limits
 
 - This checklist validates public reproducibility scaffolding, not end-to-end training on real ISLES data.
 - Full metric reproduction still requires separately prepared ISLES 2022 data and checkpoints.
