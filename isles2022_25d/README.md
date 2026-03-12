@@ -155,15 +155,29 @@ python -m src.evaluation.evaluate_isles_25d_ensemble \
 
 ---
 
-## 3. 現時点の要点（ポートフォリオ向け）
+## 3. MLflow 追跡スキーマ
+
+`--mlflow` を有効にした場合、この公開リポジトリでは 3 本のポートフォリオ用リポジトリで共通の追跡スキーマを使います。
+
+- 共通の run tag: `repo_name`, `task_type`, `model_family`, `tracking_schema=public_portfolio_v1`
+- 共通の artifact グループ:
+  - `run_metadata/`: `meta.json` と、存在する場合は設定スナップショットやタスク固有の JSON
+  - `training_trace/`: `log.jsonl`
+  - `checkpoints/`: `last.pt`, `best.pt`, およびタスク固有の best 系チェックポイント
+- 目的: セグメンテーション系と分類系の run を同じ見方で追えるようにしつつ、本格的な本番用 MLOps 基盤を主張しないこと
+
+---
+
+## 4. 現時点の要点（ポートフォリオ向け）
 
 - 同系統の 2 モデルとして、近傍重視モデルと広域文脈モデルの設計上の違い、およびそのアンサンブル効果を検証しています。
 - 小病変への対応として、Tversky loss、OHEM、EMA を組み合わせた設定を使っています。
 - 既存レポートでは、テストで平均 Dice 0.631 のアンサンブル結果を確認しています（設定依存）。
 
+
 ---
 
-## 4. 追加メモ
+## 5. 追加メモ
 
 - 2.5D 版は 3D 前処理済みデータを前提にしています。
 - 比較用 3D ベースラインは `isles2022-3d-reproducible-pipeline` を参照してください。

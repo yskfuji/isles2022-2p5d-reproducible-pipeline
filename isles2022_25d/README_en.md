@@ -153,15 +153,29 @@ python -m src.evaluation.evaluate_isles_25d_ensemble \
 
 ---
 
-## 3. Current highlights (portfolio notes)
+## 3. MLflow tracking schema
+
+When `--mlflow` is enabled, this repository follows the same public tracking schema used across the three portfolio repositories.
+
+- Common run tags: `repo_name`, `task_type`, `model_family`, `tracking_schema=public_portfolio_v1`
+- Common artifact groups:
+  - `run_metadata/`: `meta.json` and, when available, a config snapshot or task-specific JSON
+  - `training_trace/`: `log.jsonl`
+  - `checkpoints/`: `last.pt`, `best.pt`, and any task-specific best-checkpoint variants
+- Goal: make run review easier across segmentation and classification repos without claiming a production MLOps platform
+
+---
+
+## 4. Current highlights (portfolio notes)
 
 - The pipeline centers on two related segmentation models, comparing a nearby-slice model with a wide-context model and their ensemble effect.
 - Small-lesion handling is supported through settings such as Tversky loss, OHEM, and EMA.
 - Existing reports include ensemble runs with mean Dice around 0.631 on the local test setting, depending on configuration.
 
+
 ---
 
-## 4. Additional notes
+## 5. Additional notes
 
 - The 2.5D setup assumes preprocessed volumes prepared through the 3D pipeline.
 - For the comparison baseline, see `isles2022-3d-reproducible-pipeline`.
