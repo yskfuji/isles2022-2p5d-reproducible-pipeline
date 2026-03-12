@@ -20,7 +20,7 @@
 - 英語版: [README_en.md](README_en.md)
 - 詳細コード / 実験: `../core/pipeline/`
 - 引用情報: `../CITATION.cff`
-- リリースノート原稿: `../docs/releases/isles2022-2p5d-v1.1-portfolio.md`
+- リリースノート原稿: `../docs/releases/isles2022-2p5d-v1.2-portfolio.md`
 - ロードマップ: `../ROADMAP.md`
 
 ## 内部ファイル名の対応表
@@ -34,7 +34,7 @@
 
 現行のポートフォリオ用スナップショットは、次のタグに対応します：
 
-✅ `isles2022-2p5d-v1.1-portfolio`
+✅ `isles2022-2p5d-v1.2-portfolio`
 
 リポジトリは継続的に開発中です。
 
@@ -176,7 +176,8 @@ python tools/register_model.py \
   --model-name isles-25d-convnext \
   --version-label ensemble-candidate \
   --checkpoint best.pt \
-  --selection-reason "2.5D アンサンブル候補として昇格"
+  --selection-reason "2.5D アンサンブル候補として昇格" \
+  --promotion-rule "val_dice>=0.72"
 ```
 
 このコマンドで `artifacts/registered_models/<model-name>/<version-label>/` を作り、以下をまとめます。
@@ -194,11 +195,15 @@ python tools/register_model.py \
   --model-name isles-25d-convnext \
   --version-label ensemble-candidate \
   --checkpoint best.pt \
+  --promotion-rule "val_dice>=0.72" \
   --mlflow-register \
   --mlflow-experiment isles-model-registration \
   --registered-model-name isles-25d-convnext \
-  --registered-model-alias candidate
+  --promote-alias candidate \
+  --reject-alias needs-review
 ```
+
+promotion rule は `log.jsonl` の最終行にある最新指標に対して評価されます。条件を満たした場合に、作成した MLflow model version へ指定 alias を付けます。
 
 ---
 

@@ -20,7 +20,7 @@ This folder is the **public entry point** for the ISLES 2022 2.5D lesion-segment
 - Japanese version: [README.md](README.md)
 - Detailed code / experiments: `../core/pipeline/`
 - Citation: `../CITATION.cff`
-- Release-note source: `../docs/releases/isles2022-2p5d-v1.1-portfolio.md`
+- Release-note source: `../docs/releases/isles2022-2p5d-v1.2-portfolio.md`
 - Roadmap: `../ROADMAP.md`
 
 ## Internal filename mapping
@@ -34,7 +34,7 @@ This folder is the **public entry point** for the ISLES 2022 2.5D lesion-segment
 
 The current portfolio snapshot corresponds to:
 
-✅ `isles2022-2p5d-v1.1-portfolio`
+✅ `isles2022-2p5d-v1.2-portfolio`
 
 Active development continues on the repository.
 
@@ -174,7 +174,8 @@ python tools/register_model.py \
   --model-name isles-25d-convnext \
   --version-label ensemble-candidate \
   --checkpoint best.pt \
-  --selection-reason "candidate for 2.5D ensemble promotion"
+  --selection-reason "candidate for 2.5D ensemble promotion" \
+  --promotion-rule "val_dice>=0.72"
 ```
 
 This command creates `artifacts/registered_models/<model-name>/<version-label>/` and stores:
@@ -192,11 +193,15 @@ python tools/register_model.py \
   --model-name isles-25d-convnext \
   --version-label ensemble-candidate \
   --checkpoint best.pt \
+  --promotion-rule "val_dice>=0.72" \
   --mlflow-register \
   --mlflow-experiment isles-model-registration \
   --registered-model-name isles-25d-convnext \
-  --registered-model-alias candidate
+  --promote-alias candidate \
+  --reject-alias needs-review
 ```
+
+Promotion rules are evaluated against the latest metrics in `log.jsonl`. If the rule passes, the configured promotion alias is updated on the created MLflow model version.
 
 ---
 
