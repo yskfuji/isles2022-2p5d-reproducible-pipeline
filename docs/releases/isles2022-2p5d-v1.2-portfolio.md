@@ -6,9 +6,14 @@ A portfolio snapshot that extends the public 2.5D pipeline from experiment track
 ## Snapshot type
 Current portfolio release.
 
+## Suggested review order
+1. Start with the README for the overall picture, key metrics, and ensemble framing.
+2. Use docs/reproducibility_checklist.md for the review checkpoints, suggested order, and pass criteria.
+3. Use AUDIT_MAP.md to locate the main artifacts and commands.
+
 ## Reviewer starting points
 - README: repository overview, key metrics, and quickstart
-- docs/reproducibility_checklist.md: external review checklist and pass criteria
+- docs/reproducibility_checklist.md: external review checklist, suggested review order, and pass criteria
 - AUDIT_MAP.md: where major public artifacts and commands live
 - core/pipeline/tools/register_model.py: registry-ready bundle creation and promotion-criteria entrypoint
 
@@ -26,6 +31,7 @@ Current portfolio release.
 
 ## Main strengths in this snapshot
 - Lightweight 2.5D design: 2D ConvNeXt encoder + multi-slice channel stacking
+- A clear review path that starts from the checklist and reduces missed steps
 - Shared run metadata and artifact layout across the portfolio repositories
 - Configurable promotion criteria based on logged validation metrics
 - Optional MLflow Registry alias updates for candidate or champion handoff
