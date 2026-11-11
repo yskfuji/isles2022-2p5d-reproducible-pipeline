@@ -11,12 +11,8 @@ Reproducible 2.5D ischemic stroke lesion segmentation pipeline for ISLES 2022, w
 - Japanese entry: [isles2022_25d/README.md](isles2022_25d/README.md)
 - Detailed documentation: [isles2022_25d/README_en.md](isles2022_25d/README_en.md)
 - Citation: [CITATION.cff](CITATION.cff)
-<<<<<<< Updated upstream
-- Release note source: [docs/releases/v1.0-interview.md](docs/releases/v1.0-interview.md)
-=======
 - Public polish checklist: [docs/audit/polish-isles2022-2p5d.md](docs/audit/polish-isles2022-2p5d.md)
-- Release note source: [EN](docs/releases/isles2022-2p5d-v1.2-portfolio.md) | [JA](docs/releases/isles2022-2p5d-v1.2-portfolio_ja.md)
->>>>>>> Stashed changes
+- Release note source: [docs/releases/v1.0-interview.md](docs/releases/v1.0-interview.md)
 - Roadmap: [ROADMAP.md](ROADMAP.md)
 
 ## What this repository provides
@@ -107,9 +103,4 @@ See [CITATION.cff](CITATION.cff).
 
 ## Commit message convention
 
-To keep ongoing changes reviewable, future commits follow Conventional Commits (`type: summary`):
-
-- `fix: threshold default in eval script`
-- `feat: add ensemble calibration notes`
-- `refactor: slice sampler validation`
-- `docs: clarify 5-slice vs 7-slice evaluation protocol`
+Use Conventional Commits (`fix:`, `feat:`, `docs:`, …).
