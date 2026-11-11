@@ -11,7 +11,6 @@
 - 英語版入口: [isles2022_25d/README_en.md](isles2022_25d/README_en.md)
 - 日本語版詳細: [isles2022_25d/README.md](isles2022_25d/README.md)
 - 引用: [CITATION.cff](CITATION.cff)
-- 公開整備チェック表: [docs/audit/polish-isles2022-2p5d.md](docs/audit/polish-isles2022-2p5d.md)
 - リリースノート原稿: [docs/releases/v1.0-interview.md](docs/releases/v1.0-interview.md)
 - ロードマップ: [ROADMAP.md](ROADMAP.md)
 

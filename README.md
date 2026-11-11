@@ -11,7 +11,6 @@ Reproducible 2.5D ischemic stroke lesion segmentation pipeline for ISLES 2022, w
 - Japanese entry: [isles2022_25d/README.md](isles2022_25d/README.md)
 - Detailed documentation: [isles2022_25d/README_en.md](isles2022_25d/README_en.md)
 - Citation: [CITATION.cff](CITATION.cff)
-- Public polish checklist: [docs/audit/polish-isles2022-2p5d.md](docs/audit/polish-isles2022-2p5d.md)
 - Release note source: [docs/releases/v1.0-interview.md](docs/releases/v1.0-interview.md)
 - Roadmap: [ROADMAP.md](ROADMAP.md)
 
