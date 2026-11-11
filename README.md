@@ -4,12 +4,19 @@
 
 Reproducible 2.5D ischemic stroke lesion segmentation pipeline for ISLES 2022, with audit-ready documentation, two related segmentation models, and ensemble-based evaluation.
 
+> Research / portfolio only. **Not a medical device.** Medical data are not bundled.
+
 **Quick links**
 - English entry: [isles2022_25d/README_en.md](isles2022_25d/README_en.md)
 - Japanese entry: [isles2022_25d/README.md](isles2022_25d/README.md)
 - Detailed documentation: [isles2022_25d/README_en.md](isles2022_25d/README_en.md)
 - Citation: [CITATION.cff](CITATION.cff)
+<<<<<<< Updated upstream
 - Release note source: [docs/releases/v1.0-interview.md](docs/releases/v1.0-interview.md)
+=======
+- Public polish checklist: [docs/audit/polish-isles2022-2p5d.md](docs/audit/polish-isles2022-2p5d.md)
+- Release note source: [EN](docs/releases/isles2022-2p5d-v1.2-portfolio.md) | [JA](docs/releases/isles2022-2p5d-v1.2-portfolio_ja.md)
+>>>>>>> Stashed changes
 - Roadmap: [ROADMAP.md](ROADMAP.md)
 
 ## What this repository provides
@@ -18,7 +25,7 @@ Reproducible 2.5D ischemic stroke lesion segmentation pipeline for ISLES 2022, w
 - Two related segmentation models: a nearby-slice model and a wide-context model
 - Ensemble evaluation for a lightweight alternative to full 3D segmentation
 - Portfolio-ready documentation for external review
-- A no-data smoke test that checks the public bundle in under a minute
+- A no-data smoke test that checks the public bundle without medical data
 
 ## Internal filename mapping
 
@@ -35,13 +42,13 @@ Some config files and checkpoint examples still preserve historical internal exp
 - ML engineers looking for an auditable MRI segmentation baseline
 - Researchers looking for a reproducible ISLES-style 2.5D project structure
 
-## 3-minute overview
+## Visual overview
 
-![ISLES 2.5D architecture](docs/assets/architecture.svg)
+<p align="center"><img src="docs/assets/architecture.png" alt="ISLES 2.5D architecture" width="100%" /></p>
 
-![ISLES 2.5D repository map](docs/assets/repo_map.svg)
+<p align="center"><img src="docs/assets/repo_map.png" alt="ISLES 2.5D repository map" width="100%" /></p>
 
-![ISLES 2.5D metrics snapshot](docs/assets/results_snapshot.svg)
+<p align="center"><img src="docs/assets/results_snapshot.png" alt="ISLES 2.5D metrics snapshot" width="100%" /></p>
 
 ### Representative results
 
@@ -52,7 +59,7 @@ Some config files and checkpoint examples still preserve historical internal exp
 | 3D U-Net baseline test Dice | 0.514 | Provides a local comparison anchor |
 | Relative gain vs 3D baseline | +22.8% | Shows the benefit of the 2.5D ensemble in the local test setting |
 
-> Notes: values are configuration-dependent and come from the bundled recipe / evaluation notes. Protected medical data is intentionally not included.
+> Notes: values are configuration-dependent and come from the bundled recipe / evaluation notes. Protected medical data is intentionally not included. Research implementation only; **not a medical device**.
 
 ## Quickstart
 

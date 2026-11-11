@@ -1,9 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="420" viewBox="0 0 1200 420" role="img" aria-labelledby="title desc">
+<svg width="100%" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 420" role="img" aria-labelledby="title desc">
   <title id="title">ISLES 2.5D repository structure</title>
   <desc id="desc">Directory layout of the isles2022-2p5d-reproducible-pipeline public repository.</desc>
   <rect width="1200" height="420" fill="#0f172a"/>
-  <text x="60" y="42" fill="#f8fafc" font-family="Arial, Helvetica, sans-serif" font-size="23" font-weight="700">isles2022-2p5d-reproducible-pipeline</text>
-  <text x="60" y="68" fill="#cbd5e1" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="600">Repository Map</text>
+  <text x="60" y="42" fill="#f8fafc" font-family="'Hiragino Sans', 'Noto Sans CJK JP', Arial, Helvetica, sans-serif" font-size="23" font-weight="700">isles2022-2p5d-reproducible-pipeline</text>
+  <text x="60" y="68" fill="#cbd5e1" font-family="'Hiragino Sans', 'Noto Sans CJK JP', Arial, Helvetica, sans-serif" font-size="18" font-weight="600">Repository Map</text>
 
   <!-- Root files column -->
   <text x="60" y="90" fill="#94a3b8" font-family="monospace" font-size="12" font-weight="700">Root</text>
@@ -52,7 +52,7 @@
   <text x="600" y="297" fill="#cbd5e1" font-family="monospace" font-size="9">evaluation/evaluate_isles_25d_ensemble.py</text>
   <text x="580" y="320" fill="#94a3b8" font-family="monospace" font-size="10">tools/  data/  tests/</text>
 
-  <text x="550" y="375" fill="#64748b" font-family="Arial, Helvetica, sans-serif" font-size="12">Internal config filenames are kept for code continuity; public docs map them to descriptive model names.</text>
+  <text x="550" y="375" fill="#64748b" font-family="'Hiragino Sans', 'Noto Sans CJK JP', Arial, Helvetica, sans-serif" font-size="12">Internal config filenames are kept for code continuity; public docs map them to descriptive model names.</text>
 
   <!-- Excluded column -->
   <text x="840" y="90" fill="#94a3b8" font-family="monospace" font-size="12" font-weight="700">Excluded (not committed)</text>
