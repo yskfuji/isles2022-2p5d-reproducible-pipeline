@@ -1,57 +1,53 @@
-# Public repo polish checklist — isles2022-2p5d-reproducible-pipeline
+# 公開整備記録 — isles2022-2p5d-reproducible-pipeline
 
-テンプレ由来: RSNA `docs/audit/PUBLIC_REPO_POLISH_CHECKLIST.md`  
-監査日: 2026-11-11  
-対象ブランチ: `main`（作業は main に統合）
+手順の定義: [rsna-ich-reproducible-pipeline 公開整備プレイブック](https://github.com/yskfuji/rsna-ich-reproducible-pipeline/blob/main/docs/audit/PUBLIC_REPO_POLISH_PLAYBOOK.md)  
+記録日: 2026-11-11  
+参照ブランチ: `main`  
+参照コミット: `97d1b0b`（整備本体は `292b31f`）
 
 ## 1. 証拠と主張
 
-| 項目 | 状態 | メモ |
+| 項目 | 判定 | メモ |
 |---|---|---|
-| 数値の一次成果からの再計算 | 該当なし / 部分 | README 表と評価メモ依存 |
-| 制約と数値の同一節 | 完了 | caveat + 指標表 |
-| claims 検査スクリプト | 該当なし | 未移植 |
+| 数値の一次成果からの再計算 | 該当なし / 部分 | README 表と評価メモに依存する |
+| 制約と数値の同一節 | 合格 | caveat と指標表を併記 |
+| claims 検査スクリプト | 該当なし | 未導入 |
 
 ## 2. 公開衛生
 
-| 項目 | 状態 | メモ |
+| 項目 | 判定 | メモ |
 |---|---|---|
-| 機微パス検査 | 部分 | ignore 規則で除外。専用スクリプトなし |
-| 相対リンク | 完了 | |
-| 無視規則 | 完了 | |
+| 機微パス検査 | 部分 | ignore 規則で除外。専用スクリプトは未導入 |
+| 相対リンク | 合格 | |
+| 無視規則 | 合格 | |
 
 ## 3. 図
 
-| 項目 | 状態 | メモ |
+| 項目 | 判定 | メモ |
 |---|---|---|
-| PNG + `width="100%"` | 完了 | |
-| `*_ja.png` | 完了 | |
-| Mermaid 非依存 | 完了 | |
-| raw ハッシュ照合 | 完了 | 下記参照 |
+| PNG + `width="100%"` | 合格 | architecture / repo_map / results_snapshot |
+| `*_ja.png` | 合格 | README_ja から参照 |
+| Mermaid 非依存 | 合格 | 静的図 |
+| raw ハッシュ照合 | 合格 | `architecture_ja.png` の SHA-256 が raw と一致 |
 
 ## 4. 日本語
 
-| 項目 | 状態 | メモ |
+| 項目 | 判定 | メモ |
 |---|---|---|
-| である調 | 完了 | README_ja 書き換え |
-| textlint 設定 | 完了 | `.textlintrc.json` |
-| 口語時間売り禁止 | 完了 | |
+| である調 | 合格 | README_ja をである調へ統一 |
+| textlint 設定 | 合格 | `.textlintrc.json` |
+| 口語時間売り禁止 | 合格 | |
 
 ## 5. 完了定義
 
-| 項目 | 状態 | メモ |
+| 項目 | 判定 | メモ |
 |---|---|---|
-| ローカル図再生成 | 完了 | |
-| raw 照合 | 完了 | 下記参照 |
-| ブラウザ確認 | 未 | |
+| ローカル図再生成 | 合格 | |
+| raw 照合 | 合格 | |
+| ブラウザ確認 | 未確認 | 閲覧者側でハードリロードを推奨 |
 
-## 監査時ギャップ（整備前）
+## 公開面での到達点
 
-- です・ます調の README_ja
-- SVG 中心の埋め込み
-- 作業ブランチが `dev` に偏り、`main` と乖離しやすい
-- textlint なし、medical-device caveat が弱い
-
-## 適用コミット
-
-`292b31f` — PNG/JA/caveat/checklist
+- `main` 上の日英入口で PNG 埋め込みと medical-device caveat を揃える
+- 内部実験名と公開向け名称の対応表を維持する
+- 公開整備の判定を本記録に残す
