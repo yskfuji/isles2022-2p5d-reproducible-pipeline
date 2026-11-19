@@ -12,8 +12,9 @@ This folder is the **public entry point** for the ISLES 2022 2.5D lesion-segment
 - **Representative metrics**:
   - local test mean Dice: **0.631**
   - ensemble validation mean Dice: **0.722**
-  - 3D U-Net baseline test Dice: **0.514**
-  - relative gain vs 3D baseline: **+22.8%**
+  - older 3D figure previously cited here: **0.514** (not the current 3D repository headline)
+  - current 3D repository local-test Dice: **0.622** (threshold 0.20, 25 cases)
+  - difference vs that current figure: **0.009** (within sampling noise on 25 cases; not +22.8%)
 
 ## Quick links
 

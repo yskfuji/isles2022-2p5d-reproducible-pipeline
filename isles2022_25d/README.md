@@ -12,8 +12,9 @@
 - **成果の目安**:
   - local test mean Dice: **0.631**
   - ensemble validation mean Dice: **0.722**
-  - 3D U-Net baseline test Dice: **0.514**
-  - relative gain vs 3D baseline: **+22.8%**
+  - 以前この文書が使っていた 3D の値: **0.514**（現在の 3D リポジトリの見出しではない）
+  - 現在の 3D リポジトリのローカルテスト Dice: **0.622**（しきい値 0.20、25 例）
+  - その現行値との差: **0.009**（25 例では誤差の範囲。+22.8% ではない）
 
 ## すぐ使うリンク
 

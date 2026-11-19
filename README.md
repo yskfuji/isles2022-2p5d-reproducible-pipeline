@@ -50,10 +50,11 @@ Some config files and checkpoint examples still preserve historical internal exp
 |---|---:|---|
 | Local test mean Dice | 0.631 | Practical performance snapshot for the bundled 2.5D ensemble recipe |
 | Validation mean Dice | 0.722 | Demonstrates stronger in-distribution validation behavior for the two-model ensemble |
-| 3D U-Net baseline test Dice | 0.514 | Provides a local comparison anchor |
-| Relative gain vs 3D baseline | +22.8% | Shows the benefit of the 2.5D ensemble in the local test setting |
+| Older 3D figure previously used here | 0.514 | Kept only as the number this repository used before. It is not the current 3D repository headline |
+| Current 3D repository local-test Dice | 0.622 | `isles2022-3d-reproducible-pipeline`, threshold 0.20, 25 cases |
+| Difference vs that current figure | 0.009 | 0.631 − 0.622. On 25 cases this is within sampling noise |
 
-> Notes: values are configuration-dependent and come from the bundled recipe / evaluation notes. Protected medical data is intentionally not included. Research implementation only; **not a medical device**.
+> Notes: do not read 0.631 as a +22.8% gain over the current 3D repository. That percentage used 0.514, which this repository no longer treats as the comparison headline. Values are configuration-dependent. Protected medical data is intentionally not included. Research implementation only; **not a medical device**.
 
 ## Quickstart
 
