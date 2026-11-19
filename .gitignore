@@ -1,5 +1,10 @@
 # datasets / generated artifacts (do not publish)
 Datasets/
+artifacts/
+datasets/
+# core.ignorecase=true makes Datasets/ match source packages.
+!core/pipeline/src/datasets/
+!core/pipeline/src/preprocess/
 runs/
 results/
 logs/

@@ -21,6 +21,7 @@ REQUIRED_PATHS = [
     "core/pipeline/src/models/convnext_nnunet_seg.py",
     "core/pipeline/src/training/train_isles_25d_convnext_fpn.py",
     "core/pipeline/src/evaluation/evaluate_isles_25d.py",
+    "core/pipeline/src/preprocess/utils_io.py",
 ]
 ENTRYPOINTS = [
     "python -m src.training.train_isles_25d_convnext_fpn",
@@ -71,6 +72,11 @@ def main() -> int:
     if missing:
         print("Missing required files:", *missing, sep="\n- ")
         return 1
+
+    imports = subprocess.run([sys.executable, str(root / "scripts/check_imports.py")], cwd=root)
+    if imports.returncode != 0:
+        print("Relative import check failed")
+        return imports.returncode
 
     out_dir = root / "artifacts" / "smoke_dummy"
     out_dir.mkdir(parents=True, exist_ok=True)

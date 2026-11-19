@@ -11,7 +11,8 @@ repository-code: "https://github.com/yskfuji/isles2022-2p5d-reproducible-pipelin
 url: "https://github.com/yskfuji/isles2022-2p5d-reproducible-pipeline"
 abstract: >-
   2.5D ensemble pipeline for ISLES 2022 ischemic stroke lesion segmentation.
-  Achieves test mean Dice 0.631 (+22.8% relative vs 3D U-Net baseline) using a
+  Local-test mean Dice is 0.631. The difference from the current 3D repository
+  headline (0.622) is 0.009 on 25 cases. The pipeline uses a
   nearby-slice model and a wide-context model with Tversky loss and EMA.
 keywords:
   - medical-imaging
